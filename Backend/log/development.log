@@ -39,3 +39,75 @@ Started GET "/icon.png" for 192.168.127.1 at 2026-10-06 14:25:34 +0000
   
 ActionController::RoutingError (No route matches [GET] "/icon.png"):
   
+Started GET "/" for 192.168.127.1 at 2026-10-07 10:11:15 +0000
+  [1m[35m (2.9ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='Ecommerce'*/[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='Ecommerce'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Ecommerce'*/[0m
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 6ms (Views: 1.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/icon.png" for 192.168.127.1 at 2026-10-07 10:11:15 +0000
+  
+ActionController::RoutingError (No route matches [GET] "/icon.png"):
+  
+Started GET "/" for 192.168.127.1 at 2026-10-07 10:11:16 +0000
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 1.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 192.168.127.1 at 2026-10-07 10:11:16 +0000
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 192.168.127.1 at 2026-10-07 10:11:16 +0000
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 192.168.127.1 at 2026-10-07 10:11:16 +0000
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 192.168.127.1 at 2026-10-07 10:11:47 +0000
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 2ms (Views: 1.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/icon.png" for 192.168.127.1 at 2026-10-07 10:11:47 +0000
+  
+ActionController::RoutingError (No route matches [GET] "/icon.png"):
+  
+Started GET "/" for 192.168.127.1 at 2026-10-07 10:18:06 +0000
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 2ms (Views: 1.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 192.168.127.1 at 2026-10-07 10:25:56 +0000
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Ecommerce'*/[0m
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /usr/local/bundle/ruby/3.4.0/gems/railties-8.1.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 4ms (Views: 1.3ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/icon.png" for 192.168.127.1 at 2026-10-07 10:25:57 +0000
+  
+ActionController::RoutingError (No route matches [GET] "/icon.png"):
+  

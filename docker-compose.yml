@@ -20,7 +20,7 @@ services:
       context: ./Backend
       dockerfile: dockerfile
     working_dir: /app
-    command: sh -c "bundle install && bin/rails server -b 0.0.0.0"
+    command: ["tail", "-f", "/dev/null"]
     volumes:
       - ./Backend:/app
       - bundle_data:/usr/local/bundle
