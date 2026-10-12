@@ -3,6 +3,7 @@ class Product < ApplicationRecord
   NAME_MAX_LENGTH = 120
   DESCRIPTION_MAX_LENGTH = 2_000
   belongs_to :seller, class_name: "User", inverse_of: :products, optional: true
+  has_one :product_metadata, dependent: :destroy, inverse_of: :product
 
   has_one_attached :main_image
   has_many_attached :gallery_images
@@ -32,8 +33,13 @@ class Product < ApplicationRecord
             uniqueness: { message: "bu isimden türetilen URL zaten mevcut, lütfen ürün adını biraz değiştirin" }
 
   before_validation :generate_slug, on: :create
+  after_create :ensure_product_metadata
 
   private
+
+  def ensure_product_metadata
+    create_product_metadata! unless product_metadata
+  end
 
 
   def generate_slug

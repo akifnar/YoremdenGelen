@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_12_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,6 +59,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_150000) do
     t.index ["token"], name: "index_carts_on_token", unique: true
   end
 
+  create_table "product_metadata", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "click_count", default: 0, null: false
+    t.bigint "hover_count", default: 0, null: false
+    t.bigint "rating_sum", default: 0, null: false
+    t.bigint "rating_count", default: 0, null: false
+    t.bigint "comment_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_metadata_on_product_id", unique: true
+    t.check_constraint "click_count >= 0 AND hover_count >= 0 AND rating_sum >= 0 AND rating_count >= 0 AND comment_count >= 0", name: "product_metadata_counters_nonnegative"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name", limit: 120, null: false
     t.text "description", null: false
@@ -100,5 +113,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_150000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
+  add_foreign_key "product_metadata", "products"
   add_foreign_key "products", "users", column: "seller_id"
 end
