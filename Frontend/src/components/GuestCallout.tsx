@@ -83,9 +83,19 @@ function GuestCallout() {
             size="icon"
             aria-label="Hesap önerisini kapat"
             onClick={dismiss}
-            className="absolute right-3 top-3 h-8 w-8 text-xl text-emerald-100/75 hover:bg-transparent hover:text-white focus-visible:outline-lime-300 sm:right-[max(1rem,calc((100vw-72rem)/2))]"
+            className="absolute right-3 top-3 h-9 w-9 rounded-full border border-emerald-700/70 text-emerald-100/80 hover:border-emerald-500 hover:bg-emerald-900 hover:text-white focus-visible:outline-lime-300 sm:right-[max(1rem,calc((100vw-72rem)/2))]"
           >
-            ×
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              className="h-4 w-4 shrink-0"
+            >
+              <path d="m5 5 10 10M15 5 5 15" />
+            </svg>
           </ActionButton>
         </div>
       </aside>
