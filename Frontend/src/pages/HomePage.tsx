@@ -13,33 +13,6 @@ type ProductsResponse = {
   };
 };
 
-type CachedProducts = {
-  pages: ProductsResponse[];
-  etags: (string | null)[];
-};
-
-type FetchedPage = {
-  page: ProductsResponse;
-  etag: string | null;
-  isFresh: boolean;
-};
-
-const PRODUCTS_CACHE_KEY = "yoremden-gelen:home-products:v4";
-
-function readProductsCache(): CachedProducts {
-  try {
-    const rawCache = localStorage.getItem(PRODUCTS_CACHE_KEY);
-    if (rawCache) {
-      const cache = JSON.parse(rawCache) as CachedProducts;
-      if (Array.isArray(cache.pages) && Array.isArray(cache.etags))
-        return cache;
-    }
-  } catch {
-    // Invalid or unavailable storage simply means a fresh request is needed.
-  }
-  return { pages: [], etags: [] };
-}
-
 function productTypeCategory(product: Product): string {
   const category = product.category?.trim();
   const knownCategories = [
@@ -77,120 +50,51 @@ function categoryAnchorId(category: string): string {
     .replace(/^-|-$/g, "");
 }
 
-function cachedProducts(cache: CachedProducts): Product[] {
-  return cache.pages.filter(Boolean).flatMap((page) => page.data);
-}
-
 function popularSelection(products: Product[]): Product[] {
   return products.length > 7 ? products.slice(0, 7) : [];
 }
 
 function HomePage() {
-  const [initialCache] = useState(readProductsCache);
-  const cacheRef = useRef<CachedProducts>(initialCache);
   const initialRequestStartedRef = useRef(false);
-  const initialProducts = cachedProducts(initialCache);
-  const initialPageCount = initialCache.pages[0]?.metadata.total_pages ?? 0;
-  const hasCompleteCache =
-    initialPageCount > 0 &&
-    Array.from({ length: initialPageCount }, (_, index) =>
-      Boolean(initialCache.pages[index]),
-    ).every(Boolean);
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [popularProducts, setPopularProducts] = useState<Product[]>(
-    popularSelection(initialProducts),
-  );
-  const [isLoading, setIsLoading] = useState(!hasCompleteCache);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   const loadAllProducts = useCallback(async () => {
     setError("");
-    if (cachedProducts(cacheRef.current).length === 0) setIsLoading(true);
-
-    const fetchPage = async (pageNumber: number): Promise<FetchedPage> => {
-      const cached = cacheRef.current;
-      const cachedPage = cached.pages[pageNumber - 1];
-      const etag = cached.etags[pageNumber - 1];
-      const headers = new Headers();
-      if (etag) headers.set("If-None-Match", etag);
-
-      const response = await fetch(`/api/products?page=${pageNumber}`, {
-        headers,
-      });
-      if (response.status === 304 && cachedPage) {
-        return { page: cachedPage, etag: etag ?? null, isFresh: false };
-      }
-      if (!response.ok) throw new Error("Ürünler yüklenemedi.");
-      return {
-        page: (await response.json()) as ProductsResponse,
-        etag: response.headers.get("ETag"),
-        isFresh: true,
-      };
-    };
-
-    const savePage = (pageNumber: number, result: FetchedPage) => {
-      const pages = [...cacheRef.current.pages];
-      const etags = [...cacheRef.current.etags];
-      pages[pageNumber - 1] = result.page;
-      etags[pageNumber - 1] = result.etag;
-      cacheRef.current = { pages, etags };
-      try {
-        localStorage.setItem(
-          PRODUCTS_CACHE_KEY,
-          JSON.stringify(cacheRef.current),
-        );
-      } catch {
-        // Keep the in-memory page cache when persistent storage is full or disabled.
-      }
-    };
-
+    setIsLoading(true);
     try {
-      const firstPage = await fetchPage(1);
-      if (firstPage.isFresh) cacheRef.current = { pages: [], etags: [] };
-      savePage(1, firstPage);
+      const fetchPage = async (
+        pageNumber: number,
+      ): Promise<ProductsResponse> => {
+        const response = await fetch(`/api/products?page=${pageNumber}`, {
+          cache: "no-store",
+        });
+        if (!response.ok) throw new Error("Ürünler yüklenemedi.");
+        return (await response.json()) as ProductsResponse;
+      };
 
+      const firstPage = await fetchPage(1);
       const otherPages = await Promise.all(
         Array.from(
-          { length: Math.max(0, firstPage.page.metadata.total_pages - 1) },
-          async (_, index): Promise<FetchedPage | null> => {
-            const pageNumber = index + 2;
-            try {
-              const result = await fetchPage(pageNumber);
-              savePage(pageNumber, result);
-              return result;
-            } catch {
-              return cacheRef.current.pages[pageNumber - 1]
-                ? {
-                    page: cacheRef.current.pages[pageNumber - 1],
-                    etag: cacheRef.current.etags[pageNumber - 1] ?? null,
-                    isFresh: false,
-                  }
-                : null;
-            }
-          },
+          { length: Math.max(0, firstPage.metadata.total_pages - 1) },
+          (_, index) => fetchPage(index + 2),
         ),
       );
-
-      const allPages = [firstPage, ...otherPages].filter(
-        (page): page is FetchedPage => page !== null,
-      );
-      const allProducts = allPages.flatMap(({ page }) => page.data);
+      const allProducts = [firstPage, ...otherPages]
+        .flatMap((page) => page.data)
+        .filter((product) => product.stock > 0);
       setProducts(allProducts);
       setPopularProducts(popularSelection(allProducts));
-      if (allPages.length < firstPage.page.metadata.total_pages) {
-        setError(
-          "Bazı ürünler yüklenemedi; önbellekteki ürünler gösteriliyor.",
-        );
-      }
     } catch (requestError) {
       setError(
         requestError instanceof Error
           ? requestError.message
           : "Ürünler yüklenemedi.",
       );
-      const fallbackProducts = cachedProducts(cacheRef.current);
-      setProducts(fallbackProducts);
-      setPopularProducts(popularSelection(fallbackProducts));
+      setProducts([]);
+      setPopularProducts([]);
     } finally {
       setIsLoading(false);
     }

@@ -4,10 +4,9 @@ class Api::ProductsController < ApplicationController
 
   def index
     page = product_query_params[:page]
-    active_products = Product.where(is_active: true)
+    active_products = Product.where(is_active: true).where("stock > 0")
     pagy, products = pagy(active_products.with_attached_main_image, limit: 10, page: page)
-    image_revision = ActiveStorage::Attachment.where(record_type: "Product", name: "main_image").maximum(:created_at)
-    fresh_when(etag: [ active_products.maximum(:updated_at), active_products.count, image_revision, pagy.page, 10 ], public: true)
+    response.headers["Cache-Control"] = "no-store"
 
     render json: {
       metadata: {
