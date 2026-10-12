@@ -1,0 +1,102 @@
+require 'rails_helper'
+
+RSpec.describe Product, type: :model do
+  describe "seller association" do
+    it "belongs to one seller when the product is seller-owned" do
+      seller = User.create!(name: "Seller", email: "seller@example.com", password: "secret123")
+      product = described_class.create!(
+        name: "Local cheese",
+        description: "Made by the seller",
+        price: 50,
+        stock: 4,
+        seller: seller
+      )
+
+      expect(product.seller).to eq(seller)
+    end
+
+    it "allows legacy catalog products without a seller" do
+      product = described_class.new(
+        name: "Legacy catalog item",
+        description: "Imported before seller ownership was added",
+        price: 50,
+        stock: 4
+      )
+
+      expect(product).to be_valid
+    end
+  end
+
+  describe 'validations' do
+    let(:product) do
+      Product.new(
+        name: 'Test Ürünü',
+        description: 'Test Açıklaması',
+        price: 100.0,
+        stock: 50,
+        is_active: true
+      )
+    end
+
+    context 'name' do
+      it 'is invalid without a name' do
+        product.name = nil
+        product.valid?
+        expect(product.errors[:name]).to include("Ürün adı boş bırakılamaz")
+      end
+    end
+
+    context 'description' do
+      it 'is invalid without a description' do
+        product.description = nil
+        product.valid?
+        expect(product.errors[:description]).to include("Ürün açıklaması boş bırakılamaz")
+      end
+    end
+
+
+    context 'price' do
+      it 'is invalid without a price' do
+        product.price = nil
+        product.valid?
+        expect(product.errors[:price]).to include("Fiyat alanı zorunludur")
+      end
+
+      it 'is invalid if price is zero' do
+        product.price = 0
+        product.valid?
+        expect(product.errors[:price]).to include("Fiyat 0'dan büyük olmalıdır")
+      end
+
+    end
+
+    context 'stock' do
+      it 'is invalid without a stock' do
+        product.stock = nil
+        product.valid?
+        expect(product.errors[:stock]).to include("Stok alanı zorunludur")
+      end
+
+      it 'is invalid if stock is negative' do
+        product.stock = -1
+        product.valid?
+        expect(product.errors[:stock]).to include("Stok adedi negatif olamaz")
+      end
+    end
+
+
+    context 'slug' do
+      it 'is invalid with a duplicate slug' do
+        Product.create!(
+          name: 'Aynı İsim',
+          description: 'Açıklama',
+          price: 10,
+          stock: 5
+        )
+        duplicate = Product.new(name: 'Aynı İsim', description: 'Diğer', price: 10, stock: 5)
+        duplicate.valid?
+        expect(duplicate.errors[:slug]).to include("bu isimden türetilen URL zaten mevcut, lütfen ürün adını biraz değiştirin")
+      end
+    end
+  end
+end
