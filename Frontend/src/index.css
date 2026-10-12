@@ -39,6 +39,18 @@
     animation: cart-notice-enter 220ms ease-out both;
 }
 
+.cart-notice-exit {
+    animation: cart-notice-exit 240ms ease-in both;
+    pointer-events: none;
+}
+
+@keyframes cart-notice-exit {
+    to {
+        opacity: 0;
+        transform: translateY(-0.5rem);
+    }
+}
+
 .cart-header-pulse {
     animation: cart-header-pulse 700ms ease-out;
 }
@@ -292,6 +304,7 @@ button:focus-visible,
 
 @media (prefers-reduced-motion: reduce) {
     .cart-notice,
+    .cart-notice-exit,
     .cart-header-pulse {
         animation: none;
     }

@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import ActionButton from "./ActionButton";
-import { pauseCartAction, resumeCartAction, undoCartAction } from "../cartActions";
+import {
+  pauseCartAction,
+  resumeCartAction,
+  undoCartAction,
+} from "../cartActions";
 
 type CartNotice = {
   id: string;
   message: string;
   isError?: boolean;
   undoable?: boolean;
+  exiting?: boolean;
 };
 
 function CartNotifications() {
@@ -22,16 +27,28 @@ function CartNotifications() {
     };
     const dismissNotice = (event: Event) => {
       const { id } = (event as CustomEvent<{ id: string }>).detail;
-      setNotices((current) => current.filter((notice) => notice.id !== id));
+      setNotices((current) =>
+        current.map((notice) =>
+          notice.id === id
+            ? { ...notice, exiting: true, undoable: false }
+            : notice,
+        ),
+      );
+      window.setTimeout(() => {
+        setNotices((current) => current.filter((notice) => notice.id !== id));
+      }, 240);
     };
     const showError = (event: Event) => {
-      const detail = (event as CustomEvent<{ id: string; message: string }>).detail;
+      const detail = (event as CustomEvent<{ id: string; message: string }>)
+        .detail;
       setNotices((current) => [
         ...current.filter((notice) => notice.id !== detail.id),
         { ...detail, isError: true, undoable: false },
       ]);
       window.setTimeout(() => {
-        setNotices((current) => current.filter((notice) => notice.id !== detail.id));
+        setNotices((current) =>
+          current.filter((notice) => notice.id !== detail.id),
+        );
       }, 4000);
     };
 
@@ -61,7 +78,7 @@ function CartNotifications() {
           onMouseLeave={() => resumeCartAction(notice.id)}
           onFocus={() => pauseCartAction(notice.id)}
           onBlur={() => resumeCartAction(notice.id)}
-          className={`cart-notice pointer-events-auto flex w-full items-center gap-3 border bg-white px-4 py-3 shadow-lg ${notice.isError ? "border-red-200" : "border-emerald-200"}`}
+          className={`cart-notice pointer-events-auto flex w-full items-center gap-3 border bg-white px-4 py-3 shadow-lg ${notice.isError ? "border-red-200" : "border-emerald-200"} ${notice.exiting ? "cart-notice-exit" : ""}`}
         >
           <span
             aria-hidden="true"
