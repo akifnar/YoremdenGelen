@@ -50,7 +50,7 @@ function GuestCallout() {
         aria-label="Hesap oluşturma önerisi"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-emerald-800 bg-emerald-950 text-white shadow-[0_-8px_28px_rgba(6,36,26,0.18)]"
       >
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-4 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-8">
+        <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-4 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-8">
           <div className="min-w-0 pr-9">
             <p className="font-semibold tracking-tight">
               Yöresel lezzetleri keşfetmeye hazır mısın?
@@ -83,7 +83,7 @@ function GuestCallout() {
             size="icon"
             aria-label="Hesap önerisini kapat"
             onClick={dismiss}
-            className="absolute right-3 top-3 h-9 w-9 rounded-full border border-emerald-700/70 text-emerald-100/80 hover:border-emerald-500 hover:bg-emerald-900 hover:text-white focus-visible:outline-lime-300 sm:right-[max(1rem,calc((100vw-72rem)/2))]"
+            className="guest-callout-close absolute right-3 top-3 sm:right-8 sm:top-1/2 sm:-translate-y-1/2"
           >
             <svg
               aria-hidden="true"

@@ -76,6 +76,30 @@ select {
     font: inherit;
 }
 
+.guest-callout-close {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    padding: 0;
+    border: 1px solid rgb(167 243 208 / 32%);
+    border-radius: 0;
+    background: transparent;
+    color: #d1fae5;
+    place-items: center;
+    transition:
+        border-color 180ms ease,
+        background-color 180ms ease,
+        color 180ms ease;
+}
+
+.guest-callout-close:hover,
+.guest-callout-close:focus-visible {
+    border-color: rgb(167 243 208 / 65%);
+    background: rgb(255 255 255 / 8%);
+    color: #ffffff;
+}
+
 .guest-callout-cta {
     min-height: 2.75rem;
     width: 100%;
