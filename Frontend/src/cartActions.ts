@@ -10,6 +10,7 @@ type QueuedCartAction = {
   delta: CartDelta;
   execute: () => Promise<Cart>;
   restoreLine?: CartLine;
+  restoreLines?: CartLine[];
   restoreIndex?: number;
   timeout: number | null;
   remaining: number;
@@ -49,6 +50,7 @@ async function executeAction(action: QueuedCartAction) {
       id: action.id,
       message: error instanceof Error ? error.message : "Sepet güncellenemedi.",
       restoreLine: action.restoreLine,
+      restoreLines: action.restoreLines,
       restoreIndex: action.restoreIndex,
     });
   }
@@ -59,6 +61,7 @@ export function queueCartAction(input: {
   delta: CartDelta;
   execute: () => Promise<Cart>;
   restoreLine?: CartLine;
+  restoreLines?: CartLine[];
   restoreIndex?: number;
 }): string {
   const id = window.crypto.randomUUID();
@@ -107,6 +110,7 @@ export function undoCartAction(id: string) {
   dispatch("cart-action-undone", {
     id,
     restoreLine: action.restoreLine,
+    restoreLines: action.restoreLines,
     restoreIndex: action.restoreIndex,
   });
   dispatch("cart-action-dismiss", { id });
