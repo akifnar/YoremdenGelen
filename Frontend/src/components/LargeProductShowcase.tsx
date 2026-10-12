@@ -134,20 +134,20 @@ function LargeProductShowcase({ products }: LargeProductShowcaseProps) {
           return (
             <article
               key={product.id}
-              className="group min-w-0 border border-stone-200 bg-white text-stone-900 transition-transform duration-150 hover:scale-[1.02]"
+              className="group min-w-0 overflow-hidden rounded-sm border border-stone-200 bg-white text-stone-900 transition-[border-color,box-shadow] duration-200 hover:border-emerald-200 hover:shadow-md"
             >
               <div className="relative">
                 <Link
                   to={`/urunler/${product.slug}`}
                   className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
                 >
-                  <div className="aspect-[4/3] overflow-hidden bg-stone-100">
+                  <div className="aspect-[4/3] overflow-hidden bg-emerald-50">
                     <img
                       key={`${product.id}-${photoIndex}`}
                       src={photos?.[photoIndex] ?? productImageUrl(product)}
                       alt={product.name}
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-safe:animate-photo-fade"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035] motion-safe:animate-photo-fade"
                     />
                   </div>
                 </Link>
@@ -178,11 +178,18 @@ function LargeProductShowcase({ products }: LargeProductShowcaseProps) {
                 to={`/urunler/${product.slug}`}
                 className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
               >
-                <div className="flex min-h-[5.25rem] flex-col justify-between p-3">
-                  <h3 className="line-clamp-2 min-h-10 text-sm font-medium leading-5">
-                    {product.name}
-                  </h3>
-                  <p className="mt-2 text-sm font-semibold tabular-nums">
+                <div className="flex min-h-28 flex-col justify-between p-3.5">
+                  <div>
+                    {product.category && (
+                      <p className="mb-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-emerald-700">
+                        {product.category}
+                      </p>
+                    )}
+                    <h3 className="line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-emerald-950">
+                      {product.name}
+                    </h3>
+                  </div>
+                  <p className="mt-3 text-base font-bold tabular-nums tracking-tight text-emerald-900">
                     {product.price.toLocaleString("tr-TR", {
                       style: "currency",
                       currency: "TRY",

@@ -62,21 +62,21 @@ function PopularProduct({ product }: { product: Product }) {
         setIsHovered(false);
         setImageIndex(0);
       }}
-      className="flex min-w-0 flex-col items-center text-center text-stone-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
+      className="group/popular flex min-w-0 flex-col items-center px-1 py-2 text-center text-emerald-950 transition-colors duration-200 hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
     >
-      <div className="aspect-square w-full max-w-24 overflow-hidden rounded-full border border-stone-200 bg-stone-100 sm:max-w-28">
+      <div className="aspect-square w-full max-w-24 overflow-hidden rounded-full border-2 border-white bg-emerald-50 shadow-sm ring-1 ring-emerald-100 transition-[ring-color,box-shadow] duration-200 group-hover/popular:ring-emerald-500 group-hover/popular:shadow-md sm:max-w-28">
         <img
           key={images[imageIndex]}
           src={images[imageIndex] ?? productImageUrl(product)}
           alt={product.name}
           loading="lazy"
-          className="h-full w-full animate-photo-fade object-cover"
+          className="h-full w-full animate-photo-fade object-cover transition-transform duration-500 group-hover/popular:scale-105"
         />
       </div>
-      <h3 className="mt-2 line-clamp-2 min-h-8 w-full text-xs font-medium leading-4 sm:text-sm">
+      <h3 className="mt-2 line-clamp-2 min-h-9 w-full text-xs font-semibold leading-4 sm:text-sm">
         {product.name}
       </h3>
-      <p className="mt-1 text-xs tabular-nums text-stone-600">
+      <p className="mt-1 text-xs font-semibold tabular-nums text-emerald-800">
         {product.price.toLocaleString("tr-TR", {
           style: "currency",
           currency: "TRY",

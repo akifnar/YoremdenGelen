@@ -218,17 +218,25 @@ function HomePage() {
       {(popularProducts.length > 0 || (isLoading && products.length === 0)) && (
         <section
           aria-labelledby="popular-heading"
-          className="border-b border-stone-200 pb-6"
+          className="mb-8 overflow-hidden border border-emerald-100 bg-white px-4 py-5 shadow-sm sm:px-6"
         >
-          <div className="mb-4 flex items-baseline justify-between gap-4">
-            <h1
-              id="popular-heading"
-              className="text-lg font-semibold text-stone-900"
-            >
-              Popüler ürünler
-            </h1>
+          <div className="mb-4 flex items-end justify-between gap-4 border-b border-emerald-100 pb-3">
+            <div>
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-emerald-700">
+                Üreticilerden seçtiklerimiz
+              </p>
+              <h1
+                id="popular-heading"
+                className="mt-1 text-xl font-bold tracking-tight text-emerald-950"
+              >
+                Popüler ürünler
+              </h1>
+            </div>
+            <span className="hidden text-xs font-medium text-stone-500 sm:inline">
+              Beğenilen yöresel tatlar
+            </span>
           </div>
-          <div className="overflow-x-auto pb-2">
+          <div className="overflow-x-auto pb-1">
             {isLoading && popularProducts.length === 0 ? (
               <div className="h-36 min-w-[680px] animate-pulse bg-stone-100" />
             ) : (
@@ -238,14 +246,19 @@ function HomePage() {
         </section>
       )}
 
-      <section aria-labelledby="catalog-heading" className="pt-7">
-        <div className="mb-4 flex items-baseline justify-between gap-4">
-          <h2
-            id="catalog-heading"
-            className="text-lg font-semibold text-stone-900"
-          >
-            Kategorilere göre keşfet
-          </h2>
+      <section aria-labelledby="catalog-heading" className="pt-2">
+        <div className="mb-5 flex items-end justify-between gap-4 border-b border-emerald-200 pb-3">
+          <div>
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-emerald-700">
+              Tazesi, yöreseli, sana özel
+            </p>
+            <h2
+              id="catalog-heading"
+              className="mt-1 text-xl font-bold tracking-tight text-emerald-950"
+            >
+              Kategorilere göre keşfet
+            </h2>
+          </div>
         </div>
 
         {isLoading && products.length === 0 ? (

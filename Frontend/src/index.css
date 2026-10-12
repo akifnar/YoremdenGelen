@@ -76,6 +76,73 @@ select {
     font: inherit;
 }
 
+.site-header-action {
+    min-height: 2.625rem;
+    border-radius: 0.25rem;
+    padding: 0 0.9rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.site-header-action--seller,
+.site-header-action--plain {
+    border-color: rgb(167 243 208 / 30%);
+    background: transparent;
+    color: #ecfdf5;
+}
+
+.site-header-action--seller:hover,
+.site-header-action--plain:hover {
+    border-color: rgb(167 243 208 / 65%);
+    background: rgb(255 255 255 / 8%);
+    color: #ffffff;
+}
+
+.site-header-action--login {
+    border-color: rgb(167 243 208 / 55%);
+    background: transparent;
+    color: #f0fdf4;
+}
+
+.site-header-action--login:hover {
+    border-color: #a7f3d0;
+    background: rgb(255 255 255 / 8%);
+    color: #ffffff;
+}
+
+.site-header-action--register {
+    border-color: #d9f99d;
+    background: #d9f99d;
+    color: #123b2d;
+}
+
+.site-header-action--register:hover {
+    border-color: #ecfccb;
+    background: #ecfccb;
+    box-shadow: 0 2px 10px rgb(217 249 157 / 16%);
+}
+
+.site-header-action--logout {
+    border-color: rgb(167 243 208 / 30%);
+    background: transparent;
+    color: #ecfdf5;
+}
+
+.site-header-action--logout:hover,
+.site-header-action--logout:focus-visible {
+    border-color: #fca5a5;
+    background: #b91c1c;
+    color: #ffffff;
+}
+
 .seller-field {
     transition:
         border-color 180ms ease,
@@ -121,6 +188,7 @@ button:focus-visible,
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .site-header-action,
     .seller-field,
     .seller-file::file-selector-button,
     .seller-publish {
