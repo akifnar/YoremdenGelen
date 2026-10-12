@@ -13,6 +13,7 @@ import Header from "./components/Header";
 import AboutPage from "./pages/AboutPage";
 
 import CartPage from "./pages/CartPage";
+import CartNotifications from "./components/CartNotifications";
 import FaqPage from "./pages/FaqPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -67,6 +68,7 @@ function App() {
       <RouteScrollReset />
       <div className="app-shell flex min-h-screen flex-col bg-[var(--page)] text-[var(--ink)]">
         <Header />
+        <CartNotifications />
         <div className="flex-1">
           <AppRoutes />
         </div>

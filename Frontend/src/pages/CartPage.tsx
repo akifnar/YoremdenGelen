@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CartRequestError, cartRequest, type Cart } from "../cartApi";
+import {
+  CartRequestError,
+  cartRequest,
+  type Cart,
+  type CartLine,
+} from "../cartApi";
+import { queueCartAction } from "../cartActions";
 import productImageUrl from "../productImageUrl";
 import ActionButton from "../components/ActionButton";
 
@@ -33,9 +39,41 @@ function CartPage() {
         if (isCurrent) setIsLoading(false);
       }
     };
+    const restoreRemovedLine = (event: Event) => {
+      const detail = (
+        event as CustomEvent<{ restoreLine?: CartLine; restoreIndex?: number }>
+      ).detail;
+      if (!detail.restoreLine) return;
+      setCart((current) => {
+        if (
+          !current ||
+          current.items.some((line) => line.id === detail.restoreLine?.id)
+        )
+          return current;
+        const items = [...current.items];
+        items.splice(
+          detail.restoreIndex ?? items.length,
+          0,
+          detail.restoreLine,
+        );
+        return {
+          ...current,
+          items,
+          item_count: current.item_count + detail.restoreLine.quantity,
+          subtotal: current.subtotal + detail.restoreLine.line_total,
+        };
+      });
+    };
+    const refreshCart = () => void loadCart();
     void loadCart();
+    window.addEventListener("cart-action-undone", restoreRemovedLine);
+    window.addEventListener("cart-action-failed", restoreRemovedLine);
+    window.addEventListener("cart-changed", refreshCart);
     return () => {
       isCurrent = false;
+      window.removeEventListener("cart-action-undone", restoreRemovedLine);
+      window.removeEventListener("cart-action-failed", restoreRemovedLine);
+      window.removeEventListener("cart-changed", refreshCart);
     };
   }, [navigate]);
 
@@ -57,17 +95,32 @@ function CartPage() {
     }
   };
 
-  const removeItem = async (itemId: number) => {
-    try {
-      setCart(await cartRequest(`/items/${itemId}`, { method: "DELETE" }));
-      setError("");
-    } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Ürün kaldırılamadı",
-      );
-    }
+  const removeItem = (itemId: number) => {
+    if (!cart) return;
+    const restoreIndex = cart.items.findIndex((line) => line.id === itemId);
+    const restoreLine = cart.items[restoreIndex];
+    if (!restoreLine) return;
+    setCart((current) =>
+      current
+        ? {
+            ...current,
+            items: current.items.filter((line) => line.id !== itemId),
+            item_count: current.item_count - restoreLine.quantity,
+            subtotal: current.subtotal - restoreLine.line_total,
+          }
+        : current,
+    );
+    setError("");
+    queueCartAction({
+      message: `${restoreLine.product.name} sepetten kaldırıldı.`,
+      delta: {
+        item_count: -restoreLine.quantity,
+        subtotal: -restoreLine.line_total,
+      },
+      restoreLine,
+      restoreIndex,
+      execute: () => cartRequest(`/items/${itemId}`, { method: "DELETE" }),
+    });
   };
 
   if (isLoading) {
@@ -104,7 +157,7 @@ function CartPage() {
       ) : (
         <div className="grid gap-8 py-6 lg:grid-cols-[1fr_18rem]">
           <div className="divide-y divide-stone-200 border-y border-stone-200">
-            {cart.items.map((item) => (
+            {cart.items.map((item, index) => (
               <article
                 key={item.id}
                 className="grid grid-cols-[5rem_1fr_auto] items-center gap-4 py-4 sm:grid-cols-[6rem_1fr_auto]"
@@ -121,6 +174,17 @@ function CartPage() {
                   >
                     {item.product.name}
                   </Link>
+                  {cart.items.findIndex(
+                    (line) => line.product.id === item.product.id,
+                  ) === index && (
+                    <span className="mt-1 inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+                      Sepette toplam{" "}
+                      {cart.items
+                        .filter((line) => line.product.id === item.product.id)
+                        .reduce((total, line) => total + line.quantity, 0)}{" "}
+                      adet
+                    </span>
+                  )}
                   <p className="mt-1 text-sm tabular-nums text-stone-600">
                     {item.product.price.toLocaleString("tr-TR", {
                       style: "currency",

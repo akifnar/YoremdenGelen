@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CartRequestError, cartRequest } from "../cartApi";
+import { cartRequest } from "../cartApi";
+import { queueCartAction } from "../cartActions";
 import AddToCartButton from "./AddToCartButton";
 import ActionButton from "./ActionButton";
 import type { Product } from "./ProductCard";
@@ -46,24 +47,22 @@ function LargeProductShowcase({ products }: LargeProductShowcaseProps) {
   const navigate = useNavigate();
 
   const addToCart = async (product: Product) => {
+    if (!localStorage.getItem("auth-user")) {
+      navigate(`/login?returnTo=${encodeURIComponent("/")}`);
+      return;
+    }
     setAddingProductId(product.id);
     setCartError("");
-    try {
-      await cartRequest("/items", {
-        method: "POST",
-        body: JSON.stringify({ product_id: product.id, quantity: 1 }),
-      });
-    } catch (error) {
-      if (error instanceof CartRequestError && error.status === 401) {
-        navigate(`/login?returnTo=${encodeURIComponent("/")}`);
-      } else {
-        setCartError(
-          error instanceof Error ? error.message : "Sepete eklenemedi.",
-        );
-      }
-    } finally {
-      setAddingProductId(null);
-    }
+    queueCartAction({
+      message: `${product.name} sepetinize eklendi.`,
+      delta: { item_count: 1, subtotal: product.price },
+      execute: () =>
+        cartRequest("/items", {
+          method: "POST",
+          body: JSON.stringify({ product_id: product.id, quantity: 1 }),
+        }),
+    });
+    setAddingProductId(null);
   };
 
   const changePhoto = async (

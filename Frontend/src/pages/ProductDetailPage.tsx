@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ProductInformation from "../components/ProductInformation";
-import { CartRequestError, cartRequest } from "../cartApi";
+import { cartRequest } from "../cartApi";
+import { queueCartAction } from "../cartActions";
 import type { Product } from "../components/ProductCard";
 import ActionButton from "../components/ActionButton";
 
@@ -104,34 +105,24 @@ function ProductDetailPage() {
   }
 
   const addToCart = async () => {
-    setIsAdding(true);
-    setCartMessage("");
-    try {
-      const cart = await cartRequest("/items", {
-        method: "POST",
-        body: JSON.stringify({ product_id: product.id, quantity }),
-      });
-      setCartMessage(
-        `Sepete eklendi. Sepetinizde ${cart.item_count} ürün var.`,
+    if (!localStorage.getItem("auth-user")) {
+      navigate(
+        `/login?returnTo=${encodeURIComponent(`/urunler/${product.slug}`)}`,
       );
-    } catch (requestError) {
-      if (
-        requestError instanceof CartRequestError &&
-        requestError.status === 401
-      ) {
-        navigate(
-          `/login?returnTo=${encodeURIComponent(`/urunler/${product.slug}`)}`,
-        );
-      } else {
-        setCartMessage(
-          requestError instanceof Error
-            ? requestError.message
-            : "Ürün sepete eklenemedi.",
-        );
-      }
-    } finally {
-      setIsAdding(false);
+      return;
     }
+    setCartMessage("");
+    setIsAdding(true);
+    queueCartAction({
+      message: `${product.name} sepetinize eklendi.`,
+      delta: { item_count: quantity, subtotal: product.price * quantity },
+      execute: () =>
+        cartRequest("/items", {
+          method: "POST",
+          body: JSON.stringify({ product_id: product.id, quantity }),
+        }),
+    });
+    window.setTimeout(() => setIsAdding(false), 300);
   };
 
   return (

@@ -18,6 +18,10 @@ function readAuthUser(): AuthUser | null {
 function Header() {
   const [user, setUser] = useState<AuthUser | null>(readAuthUser);
   const [logoutError, setLogoutError] = useState("");
+  const [pendingDeltas, setPendingDeltas] = useState<
+    Record<string, { item_count: number; subtotal: number }>
+  >({});
+  const [cartPulse, setCartPulse] = useState(false);
   const [cart, setCart] = useState<Pick<
     Cart,
     "item_count" | "subtotal"
@@ -36,6 +40,52 @@ function Header() {
     return () => {
       window.removeEventListener("auth-state-changed", syncUser);
       window.removeEventListener("storage", syncUser);
+    };
+  }, []);
+
+  useEffect(() => {
+    const addPreview = (event: Event) => {
+      const { id, delta } = (
+        event as CustomEvent<{
+          id: string;
+          delta: { item_count: number; subtotal: number };
+        }>
+      ).detail;
+      setPendingDeltas((current) => ({ ...current, [id]: delta }));
+      if (delta.item_count > 0) {
+        setCartPulse(true);
+        window.setTimeout(() => setCartPulse(false), 900);
+      }
+    };
+    const removePreview = (event: Event) => {
+      const { id } = (event as CustomEvent<{ id: string }>).detail;
+      setPendingDeltas((current) => {
+        const next = { ...current };
+        delete next[id];
+        return next;
+      });
+    };
+    const commitPreview = (event: Event) => {
+      const { id, cart: committedCart } = (
+        event as CustomEvent<{ id: string; cart: Cart }>
+      ).detail;
+      setCart({
+        item_count: committedCart.item_count,
+        subtotal: committedCart.subtotal,
+      });
+      setPendingDeltas((current) => {
+        const next = { ...current };
+        delete next[id];
+        return next;
+      });
+    };
+    window.addEventListener("cart-preview-change", addPreview);
+    window.addEventListener("cart-preview-cancel", removePreview);
+    window.addEventListener("cart-action-committed", commitPreview);
+    return () => {
+      window.removeEventListener("cart-preview-change", addPreview);
+      window.removeEventListener("cart-preview-cancel", removePreview);
+      window.removeEventListener("cart-action-committed", commitPreview);
     };
   }, []);
 
@@ -95,6 +145,20 @@ function Header() {
       );
     }
   };
+
+  const previewTotals = Object.values(pendingDeltas).reduce(
+    (totals, delta) => ({
+      item_count: totals.item_count + delta.item_count,
+      subtotal: totals.subtotal + delta.subtotal,
+    }),
+    { item_count: 0, subtotal: 0 },
+  );
+  const displayedCart = cart
+    ? {
+        item_count: Math.max(0, cart.item_count + previewTotals.item_count),
+        subtotal: Math.max(0, cart.subtotal + previewTotals.subtotal),
+      }
+    : null;
 
   return (
     <header className="bg-emerald-950 text-white">
@@ -177,11 +241,11 @@ function Header() {
             <Link
               to="/sepet"
               aria-label={
-                cart
-                  ? `Sepet, ${cart.item_count} ürün, ${cart.subtotal.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}`
+                displayedCart
+                  ? `Sepet, ${displayedCart.item_count} ürün, ${displayedCart.subtotal.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}`
                   : "Sepet"
               }
-              className="ml-1 flex shrink-0 items-center gap-2 border border-emerald-200 bg-emerald-100 px-3 py-2 font-semibold text-emerald-950 transition-colors hover:border-emerald-300 hover:bg-emerald-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-200 sm:px-4"
+              className={`ml-1 flex shrink-0 items-center gap-2 border border-emerald-200 bg-emerald-100 px-3 py-2 font-semibold text-emerald-950 transition-colors hover:border-emerald-300 hover:bg-emerald-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-200 sm:px-4 ${cartPulse ? "cart-header-pulse" : ""}`}
             >
               <svg
                 aria-hidden="true"
@@ -200,11 +264,11 @@ function Header() {
                 <circle cx="18" cy="20" r="1" />
               </svg>
               <span>Sepet</span>
-              {cart && (
+              {displayedCart && (
                 <span className="border-l border-emerald-950/20 pl-2 text-[0.68rem] leading-4">
-                  <span className="block">{cart.item_count} ürün</span>
+                  <span className="block">{displayedCart.item_count} ürün</span>
                   <span className="block tabular-nums">
-                    {cart.subtotal.toLocaleString("tr-TR", {
+                    {displayedCart.subtotal.toLocaleString("tr-TR", {
                       style: "currency",
                       currency: "TRY",
                     })}
