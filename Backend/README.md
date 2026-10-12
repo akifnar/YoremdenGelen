@@ -1,24 +1,31 @@
-# README
+# Rails API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Bu dizin Yöremden Gelen’in Rails JSON API’sini içerir. Proje kurulumu, Docker Compose servisleri ve geliştirme hesapları için depo kökündeki [`README.md`](../README.md) dosyasına bakın.
 
-Things you may want to cover:
+## Yerel komutlar
 
-* Ruby version
+```sh
+bundle install
+bin/rails db:prepare
+bin/rails server
+```
 
-* System dependencies
+API, PostgreSQL kullanır. `db:prepare` ilk veritabanı kurulumunda migration’ları ve seed’leri çalıştırır; satıcı ürün sahipliği migration’ı da bu adıma dahildir.
 
-* Configuration
+## API alanları
 
-* Database creation
+- `POST /api/auth/register`, `POST /api/auth/login`, `DELETE /api/auth/logout`
+- `GET /api/products`, `GET /api/products/:slug`
+- `GET|POST /api/seller/products`, `PATCH|DELETE /api/seller/products/:id`
+- `GET /api/cart`, `POST|PATCH|DELETE /api/cart/items`
+- `GET|DELETE /api/admin/users`
 
-* Database initialization
+Satıcı uçları session cookie gerektirir ve yalnızca oturum açmış kullanıcının kendi ürünlerini yönetir. Ürün fiyatı, stok, zorunlu alanlar ve sahiplik backend’de doğrulanır.
 
-* How to run the test suite
+## Testler
 
-* Services (job queues, cache servers, search engines, etc.)
+```sh
+bundle exec rspec
+```
 
-* Deployment instructions
-
-* ...
+Request spec’leri kayıt, yetkilendirme, ürün sahipliği ve sepet API’sini kapsar. Tam test paketi için test veritabanının migration’ları uygulanmış olmalıdır.
