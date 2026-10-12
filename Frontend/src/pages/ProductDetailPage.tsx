@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import ProductInformation from "../components/ProductInformation";
 import { CartRequestError, cartRequest } from "../cartApi";
 import type { Product } from "../components/ProductCard";
+import ActionButton from "../components/ActionButton";
 
 type ProductDetails = Product & {
   category: string | null;
@@ -88,12 +89,15 @@ function ProductDetailPage() {
           <h1 className="mt-4 text-3xl font-semibold text-[var(--ink)]">
             Bu ürün artık mevcut değil.
           </h1>
-          <Link
+          <ActionButton
             to="/"
-            className="mt-7 inline-flex border border-[var(--ink)] px-5 py-3 text-sm font-semibold text-[var(--ink)]"
+            variant="secondary"
+            size="md"
+            className="mt-7 border-[var(--line)] text-[var(--ink)] hover:border-[var(--ink)] hover:bg-[var(--muted)]"
           >
+            <span aria-hidden="true">←</span>
             Ürünlere dön
-          </Link>
+          </ActionButton>
         </section>
       </main>
     );

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import ActionButton from "../components/ActionButton";
 
 function ProductsPage() {
   return (
@@ -18,12 +18,14 @@ function ProductsPage() {
           Ürünlerimiz burada yakında yerini alacak. Bu sayfa şimdilik tasarım
           aşamasındadır.
         </p>
-        <Link
+        <ActionButton
           to="/hakkimizda"
-          className="mt-7 inline-flex rounded-full bg-emerald-800 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
+          variant="primary"
+          size="lg"
+          className="mt-7"
         >
           Yöremden Gelen’i tanı
-        </Link>
+        </ActionButton>
       </section>
     </main>
   );

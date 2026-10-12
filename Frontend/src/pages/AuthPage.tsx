@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import ActionButton from "../components/ActionButton";
 
 type AuthPageProps = { mode: "login" | "register" };
 
@@ -175,8 +176,10 @@ function AuthPage({ mode }: AuthPageProps) {
               autoComplete={isRegister ? "new-password" : "current-password"}
               className="min-w-0 flex-1 px-3 py-3 outline-none"
             />
-            <button
+            <ActionButton
               type="button"
+              variant="quiet"
+              size="icon"
               aria-label={passwordVisible ? "Şifreyi gizle" : "Şifreyi göster"}
               aria-pressed={passwordVisible}
               onPointerDown={(event) => {
@@ -194,10 +197,10 @@ function AuthPage({ mode }: AuthPageProps) {
               }}
               onKeyUp={() => setPasswordVisible(false)}
               onBlur={() => setPasswordVisible(false)}
-              className="px-3 text-lg text-stone-500"
+              className="border-0 px-3 text-lg text-stone-500 hover:bg-stone-100"
             >
               <span aria-hidden="true">◉</span>
-            </button>
+            </ActionButton>
           </div>
         </div>
         <label className="flex items-center gap-2 text-sm text-stone-700">
@@ -208,12 +211,15 @@ function AuthPage({ mode }: AuthPageProps) {
           />
           Beni hatırla
         </label>
-        <button
+        <ActionButton
+          type="submit"
+          variant="primary"
+          size="lg"
           disabled={busy}
-          className="w-full bg-stone-900 px-4 py-3 font-semibold text-white disabled:opacity-50"
+          className="w-full border-stone-900 bg-stone-900 hover:border-stone-700 hover:bg-stone-700"
         >
           {busy ? "İşleniyor…" : isRegister ? "Kayıt ol" : "Giriş yap"}
-        </button>
+        </ActionButton>
       </form>
       <div
         ref={googleButton}

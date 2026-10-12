@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Product } from "../components/ProductCard";
 import productImageUrl from "../productImageUrl";
+import ActionButton from "../components/ActionButton";
 
 type SellerProduct = Product & {
   category: string | null;
@@ -287,7 +288,7 @@ function SellerProductsPage() {
               onChange={(event) =>
                 setForm({ ...form, description: event.target.value })
               }
-              className="seller-field mt-1 w-full resize-y border border-stone-300 px-3 py-2.5 font-normal"
+              className="seller-field mt-1 w-full resize-none border border-stone-300 px-3 py-2.5 font-normal"
             />
             <span className="mt-1 block text-right text-xs font-normal text-stone-500">
               {form.description.length}/{DESCRIPTION_MAX_LENGTH}
@@ -326,25 +327,28 @@ function SellerProductsPage() {
             </p>
           )}
           <div className="flex flex-wrap gap-2 sm:col-span-2">
-            <button
+            <ActionButton
               type="submit"
+              variant="primary"
+              size="lg"
               disabled={isSaving}
-              className="seller-publish bg-emerald-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 disabled:opacity-50"
+              className="seller-publish"
             >
               {isSaving
                 ? "Kaydediliyor…"
                 : editingProductId
                   ? "Değişiklikleri kaydet"
                   : "Ürünü yayınla"}
-            </button>
+            </ActionButton>
             {editingProductId && (
-              <button
+              <ActionButton
                 type="button"
+                variant="secondary"
+                size="lg"
                 onClick={resetForm}
-                className="border border-stone-300 px-5 py-2.5 text-sm text-stone-700 transition-colors hover:bg-stone-100"
               >
                 Vazgeç
-              </button>
+              </ActionButton>
             )}
           </div>
         </form>
@@ -395,20 +399,22 @@ function SellerProductsPage() {
                 <div className="flex gap-2">
                   {product.is_active && (
                     <>
-                      <button
+                      <ActionButton
                         type="button"
+                        variant="secondary"
+                        size="sm"
                         onClick={() => editProduct(product)}
-                        className="border border-stone-300 px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-100"
                       >
                         Düzenle
-                      </button>
-                      <button
+                      </ActionButton>
+                      <ActionButton
                         type="button"
+                        variant="danger"
+                        size="sm"
                         onClick={() => void archiveProduct(product.id)}
-                        className="border border-stone-300 px-3 py-2 text-sm text-stone-700 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-800"
                       >
                         Yayından kaldır
-                      </button>
+                      </ActionButton>
                     </>
                   )}
                 </div>

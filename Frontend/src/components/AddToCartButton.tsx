@@ -1,3 +1,5 @@
+import ActionButton from "./ActionButton";
+
 type AddToCartButtonProps = {
   onClick: () => void;
   disabled?: boolean;
@@ -12,8 +14,9 @@ function AddToCartButton({
   className = "",
 }: AddToCartButtonProps) {
   return (
-    <button
+    <ActionButton
       type="button"
+      variant="icon"
       aria-label={isAdding ? "Sepete ekleniyor" : "Sepete ekle"}
       aria-busy={isAdding}
       title="Sepete ekle"
@@ -35,8 +38,10 @@ function AddToCartButton({
         <circle cx="10" cy="20" r="1" />
         <circle cx="18" cy="20" r="1" />
       </svg>
-      <span className="sr-only">{isAdding ? "Sepete ekleniyor" : "Sepete ekle"}</span>
-    </button>
+      <span className="sr-only">
+        {isAdding ? "Sepete ekleniyor" : "Sepete ekle"}
+      </span>
+    </ActionButton>
   );
 }
 

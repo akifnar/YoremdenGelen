@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Product } from "./ProductCard";
 import productImageUrl, { foodImageUrl } from "../productImageUrl";
 import AddToCartButton from "./AddToCartButton";
+import ActionButton from "./ActionButton";
 
 type ProductInformationProps = {
   product: Product & {
@@ -57,41 +58,47 @@ function ProductInformation({
           />
           {photos.length > 1 && (
             <>
-              <button
+              <ActionButton
                 type="button"
+                variant="quiet"
+                size="icon"
                 aria-label="Önceki ürün fotoğrafı"
                 onClick={() =>
                   setSelectedPhoto(
                     (index) => (index - 1 + photos.length) % photos.length,
                   )
                 }
-                className="absolute left-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center bg-white/90 text-xl hover:bg-white"
+                className="absolute left-3 top-1/2 h-10 w-10 -translate-y-1/2 bg-white/90 hover:bg-white"
               >
                 ‹
-              </button>
-              <button
+              </ActionButton>
+              <ActionButton
                 type="button"
+                variant="quiet"
+                size="icon"
                 aria-label="Sonraki ürün fotoğrafı"
                 onClick={() =>
                   setSelectedPhoto((index) => (index + 1) % photos.length)
                 }
-                className="absolute right-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center bg-white/90 text-xl hover:bg-white"
+                className="absolute right-3 top-1/2 h-10 w-10 -translate-y-1/2 bg-white/90 hover:bg-white"
               >
                 ›
-              </button>
+              </ActionButton>
             </>
           )}
         </div>
         {photos.length > 1 && (
           <div className="grid grid-cols-4 gap-2 border-t border-[var(--line)] p-2">
             {photos.map((photo, index) => (
-              <button
+              <ActionButton
                 key={photo}
                 type="button"
+                variant="quiet"
+                size="icon"
                 aria-label={`${index + 1}. fotoğrafı göster`}
                 aria-pressed={selectedPhoto === index}
                 onClick={() => setSelectedPhoto(index)}
-                className={`aspect-square overflow-hidden border ${selectedPhoto === index ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
+                className={`aspect-square h-auto w-full overflow-hidden p-0 ${selectedPhoto === index ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
               >
                 <img
                   src={photo}
@@ -99,7 +106,7 @@ function ProductInformation({
                   loading="lazy"
                   className="h-full w-full object-cover"
                 />
-              </button>
+              </ActionButton>
             ))}
           </div>
         )}
@@ -134,15 +141,17 @@ function ProductInformation({
               className="inline-flex items-center border border-[var(--line)]"
               aria-label="Ürün adedi"
             >
-              <button
+              <ActionButton
                 type="button"
+                variant="quiet"
+                size="sm"
                 aria-label="Adedi azalt"
                 onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1 || product.stock < 1}
-                className="px-3 py-2 text-lg disabled:opacity-40"
+                className="border-0 px-3 py-2 text-lg hover:bg-transparent disabled:opacity-40"
               >
                 −
-              </button>
+              </ActionButton>
               {isEditingQuantity ? (
                 <input
                   type="number"
@@ -173,17 +182,19 @@ function ProductInformation({
                   {quantity}
                 </span>
               )}
-              <button
+              <ActionButton
                 type="button"
+                variant="quiet"
+                size="sm"
                 aria-label="Adedi artır"
                 onClick={() =>
                   onQuantityChange(Math.min(product.stock, quantity + 1))
                 }
                 disabled={quantity >= product.stock || product.stock < 1}
-                className="px-3 py-2 text-lg disabled:opacity-40"
+                className="border-0 px-3 py-2 text-lg hover:bg-transparent disabled:opacity-40"
               >
                 +
-              </button>
+              </ActionButton>
             </div>
             <AddToCartButton
               onClick={onAddToCart}

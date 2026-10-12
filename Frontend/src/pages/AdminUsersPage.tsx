@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ActionButton from "../components/ActionButton";
 import { useNavigate } from "react-router-dom";
 
 type AdminUser = {
@@ -86,13 +87,14 @@ function AdminUsersPage() {
               </p>
               <p className="text-sm text-stone-600">{user.email}</p>
             </div>
-            <button
+            <ActionButton
               type="button"
+              variant="danger"
+              size="sm"
               onClick={() => void deleteUser(user.id)}
-              className="border border-red-700 px-3 py-2 text-sm text-red-700"
             >
               Sil
-            </button>
+            </ActionButton>
           </div>
         ))}
       </div>

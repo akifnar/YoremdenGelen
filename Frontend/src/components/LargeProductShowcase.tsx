@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CartRequestError, cartRequest } from "../cartApi";
 import AddToCartButton from "./AddToCartButton";
+import ActionButton from "./ActionButton";
 import type { Product } from "./ProductCard";
 import productImageUrl, { foodImageUrl } from "../productImageUrl";
 
@@ -150,24 +151,28 @@ function LargeProductShowcase({ products }: LargeProductShowcaseProps) {
                     />
                   </div>
                 </Link>
-                <button
+                <ActionButton
                   type="button"
+                  variant="quiet"
+                  size="icon"
                   aria-label={`${product.name} önceki fotoğraf`}
                   disabled={loadingProductId === product.id}
                   onClick={(event) => void changePhoto(event, product, -1)}
-                  className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center bg-white/90 text-xl opacity-100 transition-opacity duration-300 hover:bg-white disabled:opacity-50 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                  className="absolute left-2 top-1/2 h-9 w-9 -translate-y-1/2 bg-white/90 text-xl opacity-100 hover:bg-white disabled:opacity-50 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
                 >
                   ‹
-                </button>
-                <button
+                </ActionButton>
+                <ActionButton
                   type="button"
+                  variant="quiet"
+                  size="icon"
                   aria-label={`${product.name} sonraki fotoğraf`}
                   disabled={loadingProductId === product.id}
                   onClick={(event) => void changePhoto(event, product, 1)}
-                  className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center bg-white/90 text-xl opacity-100 transition-opacity duration-300 hover:bg-white disabled:opacity-50 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                  className="absolute right-2 top-1/2 h-9 w-9 -translate-y-1/2 bg-white/90 text-xl opacity-100 hover:bg-white disabled:opacity-50 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
                 >
                   ›
-                </button>
+                </ActionButton>
               </div>
               <Link
                 to={`/urunler/${product.slug}`}

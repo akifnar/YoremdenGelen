@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import ActionButton from "./ActionButton";
 
 type Product = {
   id: number;
@@ -54,12 +54,13 @@ function ProductCard({ product }: ProductCardProps) {
               currency: "TRY",
             })}
           </strong>
-          <Link
+          <ActionButton
             to={`/urunler/${product.slug}`}
-            className="border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
+            variant="secondary"
+            size="sm"
           >
             İncele
-          </Link>
+          </ActionButton>
         </div>
       </div>
     </article>

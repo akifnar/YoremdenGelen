@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CartRequestError, cartRequest, type Cart } from "../cartApi";
+import ActionButton from "./ActionButton";
 
 type AuthUser = { role: string; name?: string };
 
@@ -129,37 +130,45 @@ function Header() {
           )}
           {user ? (
             <>
-              <Link
+              <ActionButton
                 to="/satici/urunler"
-                className="link-underline border border-emerald-700 px-3 py-2 text-emerald-100"
+                variant="quiet"
+                size="sm"
+                className="border-emerald-700 text-emerald-100 hover:bg-emerald-900 hover:text-white"
               >
                 Ürünlerini paylaş
-              </Link>
+              </ActionButton>
               <span className="hidden text-emerald-100 sm:inline">
                 Merhaba{user.name ? `, ${user.name}` : ""}
               </span>
-              <button
+              <ActionButton
                 type="button"
+                variant="secondary"
+                size="sm"
                 onClick={() => void logout()}
-                className="border border-emerald-700 px-3 py-2 text-emerald-100 transition-colors duration-200 hover:border-red-400 hover:bg-red-600 hover:text-white focus-visible:border-red-400 focus-visible:bg-red-600 focus-visible:text-white"
+                className="border-emerald-700 bg-transparent text-emerald-100 hover:border-red-400 hover:bg-red-600 hover:text-white focus-visible:border-red-400 focus-visible:bg-red-600 focus-visible:text-white"
               >
                 Çıkış yap
-              </button>
+              </ActionButton>
             </>
           ) : (
             <>
-              <Link
+              <ActionButton
                 to="/login"
-                className="link-underline border border-emerald-300/70 px-4 py-2 font-medium text-emerald-50 transition duration-200 hover:border-lime-300 hover:bg-emerald-800 hover:text-lime-200 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-300"
+                variant="secondary"
+                size="md"
+                className="border-emerald-300/70 bg-transparent text-emerald-50 hover:border-lime-300 hover:bg-emerald-800 hover:text-lime-200 active:scale-95 focus-visible:outline-lime-300"
               >
                 Giriş yap
-              </Link>
-              <Link
+              </ActionButton>
+              <ActionButton
                 to="/register"
-                className="link-underline bg-lime-300 px-4 py-2 font-semibold text-emerald-950 transition duration-200 hover:bg-lime-200 hover:shadow-[0_0_0_2px_rgba(217,249,157,0.35)] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-200"
+                variant="accent"
+                size="md"
+                className="hover:shadow-[0_0_0_2px_rgba(217,249,157,0.35)] active:scale-95 focus-visible:outline-lime-200"
               >
                 Kayıt ol
-              </Link>
+              </ActionButton>
             </>
           )}
           {user && (

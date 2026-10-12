@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CartRequestError, cartRequest, type Cart } from "../cartApi";
 import productImageUrl from "../productImageUrl";
+import ActionButton from "../components/ActionButton";
 
 function CartPage() {
   const [cart, setCart] = useState<Cart | null>(null);
@@ -150,13 +151,15 @@ function CartPage() {
                     }
                     className="w-16 border border-stone-300 p-2 text-center text-sm tabular-nums"
                   />
-                  <button
+                  <ActionButton
                     type="button"
+                    variant="quiet"
+                    size="sm"
                     onClick={() => void removeItem(item.id)}
-                    className="text-xs text-stone-500 underline underline-offset-2"
+                    className="h-auto border-0 px-1 py-0 text-xs underline underline-offset-2"
                   >
                     Kaldır
-                  </button>
+                  </ActionButton>
                   <p className="text-sm font-semibold tabular-nums text-stone-900">
                     {item.line_total.toLocaleString("tr-TR", {
                       style: "currency",

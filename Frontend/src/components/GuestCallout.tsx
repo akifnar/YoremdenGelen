@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
+import ActionButton from "./ActionButton";
 
 function hasAuthenticatedUser() {
   try {
@@ -59,27 +60,33 @@ function GuestCallout() {
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <Link
+            <ActionButton
               to="/login"
-              className="border border-emerald-200 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-300"
+              variant="secondary"
+              size="sm"
+              className="border-emerald-200 bg-transparent text-white hover:bg-emerald-800 focus-visible:outline-lime-300"
             >
               Giriş yap
-            </Link>
-            <Link
+            </ActionButton>
+            <ActionButton
               to="/register"
-              className="bg-lime-300 px-4 py-2 text-sm font-semibold text-emerald-950 transition-colors hover:bg-lime-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-200"
+              variant="accent"
+              size="sm"
+              className="focus-visible:outline-lime-200"
             >
               Kayıt ol
-            </Link>
+            </ActionButton>
           </div>
-          <button
+          <ActionButton
             type="button"
+            variant="quiet"
+            size="icon"
             aria-label="Hesap önerisini kapat"
             onClick={dismiss}
-            className="absolute right-3 top-3 grid h-8 w-8 place-items-center text-xl text-emerald-100/75 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-300 sm:right-[max(1rem,calc((100vw-72rem)/2))]"
+            className="absolute right-3 top-3 h-8 w-8 text-xl text-emerald-100/75 hover:bg-transparent hover:text-white focus-visible:outline-lime-300 sm:right-[max(1rem,calc((100vw-72rem)/2))]"
           >
             ×
-          </button>
+          </ActionButton>
         </div>
       </aside>
     </>
