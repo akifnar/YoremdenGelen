@@ -61,7 +61,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_150000) do
 
   create_table "products", force: :cascade do |t|
     t.string "name", limit: 120, null: false
-    t.text "description", limit: 2000, null: false
+    t.text "description", null: false
     t.decimal "price", precision: 10, scale: 2, null: false
     t.integer "stock", null: false
     t.string "sku", limit: 50

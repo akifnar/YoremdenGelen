@@ -1,7 +1,8 @@
 class AddProductFieldLimits < ActiveRecord::Migration[8.1]
   def up
     change_column :products, :name, :string, limit: 120, null: false
-    change_column :products, :description, :text, limit: 2_000, null: false
+    change_column :products, :description, :text, null: false
+    add_check_constraint :products, "char_length(description) <= 2000", name: "products_description_length_limit"
     change_column :products, :category, :string, limit: 40
     change_column :products, :price, :decimal, precision: 10, scale: 2, null: false
     change_column :products, :stock, :integer, null: false
@@ -21,6 +22,7 @@ class AddProductFieldLimits < ActiveRecord::Migration[8.1]
   end
 
   def down
+    remove_check_constraint :products, name: "products_description_length_limit"
     change_column :products, :name, :string, limit: nil
     change_column :products, :description, :text, limit: nil
     change_column :products, :category, :string, limit: nil, null: true
