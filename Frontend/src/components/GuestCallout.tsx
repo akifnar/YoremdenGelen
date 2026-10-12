@@ -50,8 +50,8 @@ function GuestCallout() {
         aria-label="Hesap oluşturma önerisi"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-emerald-800 bg-emerald-950 text-white shadow-[0_-8px_28px_rgba(6,36,26,0.18)]"
       >
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <div className="pr-8">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-4 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-8">
+          <div className="min-w-0 pr-9">
             <p className="font-semibold tracking-tight">
               Yöresel lezzetleri keşfetmeye hazır mısın?
             </p>
@@ -59,20 +59,20 @@ function GuestCallout() {
               Hesabın varsa giriş yap, yoksa hemen aramıza katıl.
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="guest-callout-actions grid w-full grid-cols-2 gap-2 sm:w-auto sm:pr-12">
             <ActionButton
               to="/login"
-              variant="secondary"
-              size="sm"
-              className="border-emerald-200 bg-transparent text-white hover:bg-emerald-800 focus-visible:outline-lime-300"
+              variant="quiet"
+              size="md"
+              className="guest-callout-cta guest-callout-login"
             >
               Giriş yap
             </ActionButton>
             <ActionButton
               to="/register"
               variant="accent"
-              size="sm"
-              className="focus-visible:outline-lime-200"
+              size="md"
+              className="guest-callout-cta guest-callout-register"
             >
               Kayıt ol
             </ActionButton>

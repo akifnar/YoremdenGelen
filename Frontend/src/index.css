@@ -76,6 +76,55 @@ select {
     font: inherit;
 }
 
+.guest-callout-cta {
+    min-height: 2.75rem;
+    width: 100%;
+    border-radius: 0.2rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 650;
+    line-height: 1.1;
+    white-space: nowrap;
+    transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.guest-callout-login {
+    border-color: rgb(209 250 229 / 72%);
+    background: transparent;
+    color: #ffffff;
+}
+
+.guest-callout-login:hover,
+.guest-callout-login:focus-visible {
+    border-color: #d9f99d;
+    background: rgb(255 255 255 / 10%);
+    color: #ffffff;
+}
+
+.guest-callout-register {
+    border-color: #d9f99d;
+    background: #d9f99d;
+    color: #123b2d;
+}
+
+.guest-callout-register:hover,
+.guest-callout-register:focus-visible {
+    border-color: #ecfccb;
+    background: #ecfccb;
+    color: #123b2d;
+}
+
+@media (min-width: 640px) {
+    .guest-callout-cta {
+        width: auto;
+        min-width: 7rem;
+    }
+}
+
 .site-header-action {
     min-height: 2.625rem;
     border-radius: 0.25rem;
