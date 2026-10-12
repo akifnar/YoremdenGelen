@@ -20,17 +20,32 @@ function Footer() {
           aria-label="Alt menü"
           className="flex flex-wrap gap-x-5 gap-y-3 text-sm text-emerald-100/80"
         >
-          <Link className="transition hover:text-lime-300" to="/sss">
+          <Link
+            className="link-underline transition hover:text-lime-300"
+            to="/hakkimizda"
+          >
+            Hakkımızda
+          </Link>
+          <Link
+            className="link-underline transition hover:text-lime-300"
+            to="/sss"
+          >
             S.S.S.
           </Link>
-          <Link className="transition hover:text-lime-300" to="/teslimat-iade">
+          <Link
+            className="link-underline transition hover:text-lime-300"
+            to="/teslimat-iade"
+          >
             Teslimat ve İade
           </Link>
-          <Link className="transition hover:text-lime-300" to="/gizlilik">
+          <Link
+            className="link-underline transition hover:text-lime-300"
+            to="/gizlilik"
+          >
             Gizlilik
           </Link>
           <Link
-            className="transition hover:text-lime-300"
+            className="link-underline transition hover:text-lime-300"
             to="/kullanim-kosullari"
           >
             Kullanım Koşulları

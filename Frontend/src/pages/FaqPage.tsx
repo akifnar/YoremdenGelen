@@ -10,8 +10,9 @@ const questions = [
       "Ürünlerin açıklama ve özelliklerini ilgili ürün sayfasında bulabilirsin.",
   },
   {
-    question: "Siparişimle ilgili nasıl yardım alabilirim?",
-    answer: "Soruların için İletişim sayfasını ziyaret edebilirsin.",
+    question: "Siparişimle ilgili nasıl bilgi alabilirim?",
+    answer:
+      "Sipariş ve teslimat bilgileri ilgili sipariş adımında ve teslimat-iade sayfasında paylaşılır.",
   },
 ];
 
