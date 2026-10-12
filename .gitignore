@@ -1,0 +1,8 @@
+# Local OS/editor metadata
+.DS_Store
+
+# Rails-generated local data
+/Backend/log/
+/Backend/tmp/cache/
+/Backend/tmp/pids/
+/Backend/tmp/storage/
