@@ -5,7 +5,13 @@ class Api::Seller::ProductsController < ApplicationController
   end
 
   def create
-    product = current_user.products.new(seller_product_params)
+    attributes = seller_product_params
+    unless attributes[:main_image].present?
+      render json: { errors: [ "Ana ürün fotoğrafı zorunludur" ] }, status: :unprocessable_entity
+      return
+    end
+
+    product = current_user.products.new(attributes)
     if product.save
       render json: serialize_seller_product(product), status: :created
     else

@@ -9,8 +9,11 @@ RSpec.describe Product, type: :model do
         description: "Made by the seller",
         price: 50,
         stock: 4,
+        category: "Peynir",
         seller: seller
       )
+      product.main_image.attach(io: StringIO.new("test image"), filename: "test.jpg", content_type: "image/jpeg")
+      product.save!
 
       expect(product.seller).to eq(seller)
     end
@@ -20,7 +23,8 @@ RSpec.describe Product, type: :model do
         name: "Legacy catalog item",
         description: "Imported before seller ownership was added",
         price: 50,
-        stock: 4
+        stock: 4,
+        category: "Peynir"
       )
 
       expect(product).to be_valid
@@ -34,6 +38,7 @@ RSpec.describe Product, type: :model do
         description: 'Test Açıklaması',
         price: 100.0,
         stock: 50,
+        category: "Peynir",
         is_active: true
       )
     end
@@ -47,6 +52,12 @@ RSpec.describe Product, type: :model do
     end
 
     context 'description' do
+      it 'rejects descriptions over the database limit' do
+        product.description = "a" * (Product::DESCRIPTION_MAX_LENGTH + 1)
+        expect(product).not_to be_valid
+        expect(product.errors[:description]).to be_present
+      end
+
       it 'is invalid without a description' do
         product.description = nil
         product.valid?
@@ -85,15 +96,24 @@ RSpec.describe Product, type: :model do
     end
 
 
+    context 'category' do
+      it 'rejects categories outside the seller category list' do
+        product.category = "Bilinmeyen kategori"
+        expect(product).not_to be_valid
+        expect(product.errors[:category]).to be_present
+      end
+    end
+
     context 'slug' do
       it 'is invalid with a duplicate slug' do
         Product.create!(
           name: 'Aynı İsim',
           description: 'Açıklama',
           price: 10,
-          stock: 5
+          stock: 5,
+          category: "Peynir"
         )
-        duplicate = Product.new(name: 'Aynı İsim', description: 'Diğer', price: 10, stock: 5)
+        duplicate = Product.new(name: 'Aynı İsim', description: 'Diğer', category: "Peynir", price: 10, stock: 5)
         duplicate.valid?
         expect(duplicate.errors[:slug]).to include("bu isimden türetilen URL zaten mevcut, lütfen ürün adını biraz değiştirin")
       end

@@ -21,6 +21,7 @@ RSpec.describe "Api::Seller::Products", type: :request do
     post "/api/seller/products",
          params: {
            product: {
+             main_image: Rack::Test::UploadedFile.new(StringIO.new("fake image"), "image/jpeg", original_filename: "main.jpg"),
              name: "Balıkesir Lor Peyniri",
              description: "Günlük yerel peynir.",
              category: "Peynir",
@@ -31,7 +32,7 @@ RSpec.describe "Api::Seller::Products", type: :request do
              sku: "FORGED-SKU"
            }
          },
-         as: :json
+         as: :multipart
 
     product = Product.find_by!(name: "Balıkesir Lor Peyniri")
     expect(response).to have_http_status(:created)
@@ -45,6 +46,7 @@ RSpec.describe "Api::Seller::Products", type: :request do
     own_product = seller.products.create!(
       name: "Seller's cheese",
       description: "My product",
+      category: "Peynir",
       price: 100,
       stock: 5
     )
@@ -52,6 +54,7 @@ RSpec.describe "Api::Seller::Products", type: :request do
     other_seller.products.create!(
       name: "Other seller's olive",
       description: "Another product",
+      category: "Zeytin",
       price: 80,
       stock: 4
     )
@@ -62,12 +65,22 @@ RSpec.describe "Api::Seller::Products", type: :request do
     expect(response.parsed_body.fetch("data").pluck("id")).to eq([ own_product.id ])
   end
 
+  it "requires a main product image on the backend" do
+    post "/api/seller/products",
+         params: { product: { name: "Image required", description: "Product description", category: "Peynir", price: "20", stock: "2" } },
+         as: :json
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(response.parsed_body.fetch("errors")).to include("Ana ürün fotoğrafı zorunludur")
+  end
+
   it "validates seller input on the backend" do
     post "/api/seller/products",
          params: {
            product: {
              name: "Invalid price product",
              description: "Must be rejected by server validation.",
+             category: "Peynir",
              price: "0",
              stock: "2"
            }
@@ -82,6 +95,7 @@ RSpec.describe "Api::Seller::Products", type: :request do
     product = seller.products.create!(
       name: "Seasonal cheese",
       description: "Seasonal product",
+      category: "Peynir",
       price: 90,
       stock: 2
     )
@@ -97,6 +111,7 @@ RSpec.describe "Api::Seller::Products", type: :request do
     product = other_seller.products.create!(
       name: "Other seller's olive",
       description: "Another product",
+      category: "Zeytin",
       price: 80,
       stock: 4
     )
