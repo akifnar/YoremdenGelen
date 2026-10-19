@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CartItem, type: :model do
-  let(:cart) { Cart.create! }
+  let(:cart) { Cart.for(User.create!(name: "Alıcı", email: "buyer@example.com", password: "secret123")) }
   let(:product) do
     Product.create!(name: "Deneme Mantısı", description: "Açıklama", category: "Hamur İşleri", price: 100, stock: 3, is_active: true)
   end

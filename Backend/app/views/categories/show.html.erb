@@ -1,0 +1,17 @@
+<% content_for :title, "#{@category} · Yöremden Gelen" %>
+<%= turbo_stream_from :products %>
+
+<main class="mx-auto w-full max-w-6xl px-8 py-10">
+  <%= link_to "← Tüm kategoriler", root_path, class: "text-sm text-[var(--subtle)] hover:text-[var(--ink)]" %>
+  <div class="mt-4 flex items-baseline justify-between gap-4">
+    <h1 class="font-display text-4xl font-extrabold tracking-tight text-[var(--ink)]"><%= @category %></h1>
+    <p class="text-sm tabular-nums text-[var(--subtle)]">
+      <%= @pagy.count %> ürün<% if @pagy.pages > 1 %> · Sayfa <%= @pagy.page %>/<%= @pagy.pages %><% end %>
+    </p>
+  </div>
+  <% if @pagy.count.zero? %>
+    <p class="mt-8 rounded-[3px] border border-dashed border-[rgba(34,30,23,0.32)] p-6 text-sm text-[var(--ink-2)]">Bu kategoride şu anda satışta ürün yok.</p>
+  <% else %>
+    <%= render "products/grid", products: @products, pagy: @pagy %>
+  <% end %>
+</main>

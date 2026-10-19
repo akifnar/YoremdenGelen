@@ -1,0 +1,20 @@
+<%# locals: (user:) %>
+<div id="<%= dom_id(user) %>" class="flex flex-wrap items-center justify-between gap-4 py-4">
+  <div>
+    <p class="font-medium"><%= user.name %> <span class="ml-2 text-xs uppercase text-stone-500"><%= role_label(user.role) %></span></p>
+    <p class="text-sm text-stone-600"><%= user.email %></p>
+  </div>
+  <% unless user.id == current_user.id %>
+    <div class="flex items-center gap-2">
+      <%= form_with model: user, scope: :user, url: admin_user_path(user), method: :patch, data: { controller: "auto-submit" } do |form| %>
+        <%= form.label :role, "Rol", for: "role-#{user.id}", class: "sr-only" %>
+        <%= form.select :role, User::ROLES.map { |role| [ role_label(role), role ] }, {},
+              id: "role-#{user.id}", data: { action: "change->auto-submit#submit" },
+              class: "border border-stone-300 bg-[var(--paper-hi)] px-3 py-2 text-sm" %>
+      <% end %>
+      <%= button_to "Sil", admin_user_path(user), method: :delete,
+            form: { data: { turbo_confirm: "#{user.email} silinsin mi?" } },
+            class: button_classes(variant: :danger, size: :sm) %>
+    </div>
+  <% end %>
+</div>

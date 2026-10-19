@@ -1,0 +1,389 @@
+/* source(none): otomatik proje taraması kapalı; yalnızca aşağıdaki @source klasörleri taranır.
+   Açık olduğunda container'da .gitignore bulunmadığı için log/ ve tmp/ de taranıyor, her istekte
+   log'a yazılan satır yeniden derlemeyi tetikliyordu. */
+@import "tailwindcss" source(none);
+
+@source "../../views";
+@source "../../helpers";
+@source "../../javascript";
+
+@keyframes photo-fade {
+    from {
+        opacity: 0.45;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@utility animate-photo-fade {
+    animation: photo-fade 360ms ease-out;
+}
+
+@keyframes cart-notice-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-0.75rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cart-header-pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    45% {
+        transform: scale(1.06);
+        box-shadow: 0 0 0 4px rgba(255, 222, 0, 0.45);
+    }
+}
+
+.cart-notice {
+    animation: cart-notice-enter 220ms ease-out both;
+}
+
+.cart-notice-exit {
+    animation: cart-notice-exit 240ms ease-in both;
+    pointer-events: none;
+}
+
+@keyframes cart-notice-exit {
+    to {
+        opacity: 0;
+        transform: translateY(-0.5rem);
+    }
+}
+
+.cart-header-pulse {
+    animation: cart-header-pulse 700ms ease-out;
+}
+
+:root {
+    /* "Pano ve kâğıt" teması (bilkenters.com'daki tasarım dilinden): lacivert dokulu pano zemini,
+       üzerine bantla tutturulmuş krem kâğıtlar, mürekkep renkli metin, mavi eylem rengi. */
+    --board: #0d1322;
+    --board-deep: #0a1120;
+    --on-board: hsla(41, 26%, 88%, 0.72);
+    --on-board-strong: #f6f1e6;
+    --board-line: hsla(41, 26%, 88%, 0.14);
+    --paper: #f2ecdc;
+    --paper-hi: #f6f1e6;
+    --kraft: #e9dfc6;
+    --ink-2: #3a332a;
+    --blue: #4c7df0;
+    --blue-ink: #2f5fd0;
+    --amber: #d9a62e;
+    --star: #f5b301;
+    --marker: rgba(255, 222, 0, 0.5);
+    --marker-swipe: linear-gradient(100deg, transparent 1%, var(--marker) 4%, var(--marker) 96%, transparent 99%);
+    --tape: repeating-linear-gradient(90deg, rgba(217, 164, 65, 0.85) 0 7px, hsla(39, 75%, 70%, 0.85) 7px 14px);
+    --shadow-paper: inset 0 1px 0 hsla(0, 0%, 100%, 0.5), 0 2px 3px rgba(0, 0, 0, 0.35), 0 18px 30px -18px rgba(0, 0, 0, 0.9);
+    --shadow-note: 0 1px 2px rgba(34, 30, 23, 0.12), 0 8px 18px -10px rgba(34, 30, 23, 0.45);
+    --texture-board: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    --texture-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+    --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+    --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+    --font-hand: "Caveat", ui-rounded, cursive;
+
+    /* Mevcut view'ların kullandığı adlar kâğıt paletine eşlenir. */
+    --page: var(--board);
+    --surface: var(--paper-hi);
+    --muted: var(--kraft);
+    --line: rgba(34, 30, 23, 0.14);
+    --ink: #221e17;
+    --subtle: #6e675c;
+    --accent: var(--blue);
+    font-family:
+        "Instrument Sans",
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    color: var(--ink);
+    background: var(--board);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tailwind tema anahtarları: font-display, font-hand sınıfları. */
+@theme {
+    --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+    --font-hand: "Caveat", ui-rounded, cursive;
+}
+
+/* Pano: lacivert zemin + ince gren dokusu. */
+.board {
+    position: relative;
+    background-color: var(--board);
+    background-image: var(--texture-board);
+}
+
+/* Kâğıt: krem zemin + kâğıt dokusu + bantlı kâğıt gölgesi. */
+.paper {
+    position: relative;
+    background-color: var(--paper);
+    background-image: var(--texture-paper);
+    color: var(--ink);
+    box-shadow: var(--shadow-paper);
+}
+
+/* Ürün kartı gibi küçük notlar: biraz daha açık kâğıt, hafif gölge, düzensiz köşe. */
+.note {
+    position: relative;
+    background-color: var(--paper-hi);
+    border-radius: 3px 4px 3px 5px;
+    box-shadow: var(--shadow-note);
+    transition: box-shadow 200ms var(--ease-settle), transform 200ms var(--ease-settle);
+}
+
+.note:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(34, 30, 23, 0.14), 0 16px 26px -12px rgba(34, 30, 23, 0.5);
+}
+
+/* Bant şeridi: kâğıdı panoya tutturan, hafif eğik turuncu-krem şerit. */
+.tape {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    width: 84px;
+    height: 22px;
+    margin-left: -42px;
+    background: var(--tape);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    opacity: 0.92;
+    transform: rotate(-2.5deg);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Fosforlu kalem vurgusu (başlıklar ve menü üzerine gelme). */
+.marker {
+    background-image: var(--marker-swipe);
+    background-repeat: no-repeat;
+    background-size: 100% 42%;
+    background-position: 0 88%;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+    background-image: var(--marker-swipe);
+}
+
+/* Mavi eylem düğmesi: basılı his ve üzerinden geçen parlama. */
+.btn-blue {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 4px;
+    background: var(--blue);
+    color: var(--on-board-strong);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+    transition: background-color 180ms ease, transform 120ms ease, box-shadow 180ms ease;
+}
+
+.btn-blue::after {
+    content: "";
+    position: absolute;
+    top: -40%;
+    bottom: -40%;
+    left: 0;
+    width: 45%;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(100deg, transparent, hsla(0, 0%, 100%, 0.4), transparent);
+    transform: translateX(-160%) skewX(-18deg);
+    transition: transform 660ms cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.btn-blue:hover {
+    background: var(--blue-ink);
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+.btn-blue:hover::after {
+    transform: translateX(320%) skewX(-18deg);
+}
+
+/* Pano üzerindeki bağlantılar (header/footer). */
+.board-link {
+    color: var(--on-board);
+    transition: color 200ms ease;
+}
+
+.board-link:hover,
+.board-link:focus-visible {
+    color: var(--on-board-strong);
+}
+
+/* Yırtık kâğıt kenarı (footer üstü). */
+.torn-edge {
+    height: 12px;
+    background: var(--board);
+    -webkit-mask: radial-gradient(6px 6px at 6px 0, transparent 98%, #000) 0 0 / 12px 12px repeat-x;
+    mask: radial-gradient(6px 6px at 6px 0, transparent 98%, #000) 0 0 / 12px 12px repeat-x;
+}
+
+/* Yıldızlı puan girişi: 5 radio, sağdan sola dizilir ki ":checked ~ label" ve ":hover ~ label" seçilen
+   yıldızı ve solundakileri boyasın. Görsel sıra soldan sağa 1→5'tir (flex-row-reverse). */
+.star-input {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 2px;
+}
+
+.star-input input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.star-input label {
+    cursor: pointer;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: rgba(34, 30, 23, 0.22);
+    transition: color 120ms ease, transform 120ms ease;
+}
+
+.star-input label:hover,
+.star-input label:hover ~ label,
+.star-input input:checked ~ label {
+    color: var(--star);
+}
+
+.star-input label:hover {
+    transform: scale(1.12);
+}
+
+.star-input input:focus-visible + label {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+/* Salt okunur yıldızlar: gri sıra üstüne genişliği puana göre ayarlanan sarı sıra. */
+.stars {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+    letter-spacing: 2px;
+    color: rgba(34, 30, 23, 0.2);
+}
+
+.stars-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--star);
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+html {
+    scrollbar-gutter: stable;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+.seller-field {
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        background-color 180ms ease;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible,
+.seller-file:focus,
+.seller-publish:focus-visible {
+    outline: none;
+    border-color: #26734d;
+    box-shadow: 0 0 0 3px rgb(38 115 77 / 16%);
+}
+
+.seller-file::file-selector-button {
+    margin-right: 0.75rem;
+    border: 0;
+    background: #e8eee7;
+    padding: 0.5rem 0.75rem;
+    color: #123b2d;
+    cursor: pointer;
+    transition: background-color 180ms ease;
+}
+
+.seller-file:hover::file-selector-button {
+    background: #d7e4d9;
+}
+
+.seller-publish {
+    transition:
+        background-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+.seller-publish:hover:not(:disabled) {
+    box-shadow: 0 4px 12px rgb(18 59 45 / 18%);
+    transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cart-notice,
+    .cart-notice-exit,
+    .cart-header-pulse {
+        animation: none;
+    }
+
+    .seller-field,
+    .seller-file::file-selector-button,
+    .seller-publish {
+        transition: none;
+    }
+}
+
+::selection {
+    color: var(--ink);
+    background: var(--marker);
+}
+
+/* Turbo Drive ilerleme çubuğu marka rengiyle */
+.turbo-progress-bar {
+    height: 2px;
+    background-color: var(--amber);
+}
+
+/* Turbo Frame yüklenirken (fotoğraf geçişi vb.) hafif soluklaştır */
+turbo-frame[busy] img {
+    opacity: 0.6;
+    transition: opacity 120ms ease;
+}

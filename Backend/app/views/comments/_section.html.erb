@@ -1,0 +1,11 @@
+<%# locals: (product:, comments:, pagy:, purchase:, my_reactions:) %>
+<section aria-labelledby="comments_count" class="mt-12 border-t border-dashed border-[rgba(34,30,23,0.32)] pt-8">
+  <%= render "comments/count", product: product %>
+
+  <%# Yorum yetkisi olmayana form hiç gösterilmez (purchase: User#purchase_of, tek index sorgusu). %>
+  <% if purchase %>
+    <%= render "comments/form", product: product, purchase: purchase %>
+  <% end %>
+
+  <%= render "comments/list", product: product, comments: comments, pagy: pagy, my_reactions: my_reactions %>
+</section>
