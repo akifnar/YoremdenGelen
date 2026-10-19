@@ -120,8 +120,8 @@ unless Rails.env.production?
 
   # Örnek siparişler ve yorumlar (yalnızca boş veritabanında): ilk 10 alıcı gerçek sepet → sipariş akışıyla
   # (Checkout) satıcı 1'in ürünlerinden 3'er ürün alır; böylece bu 10 alıcı satıcı 1'in ürünlerine yorum yazabilir.
-  # Başlangıçta yalnızca ilk 5 alıcı birer yorum (puanla) yazar; satıcı bazılarına cevap verir, diğer alıcılar
-  # like/dislike bırakır. Puan, yorum ve tepki sayıları gerçek kayıtlardan oluşur.
+  # i. alıcı i. ve (i+1). ürüne birer yorum (puanla) yazar: satıcı 1'in her ürününde 2'şer yorum olur.
+  # Satıcı bazılarına cevap verir, diğer alıcılar like/dislike bırakır. Sayılar gerçek kayıtlardan oluşur.
   if Order.none?
     comment_texts = [
       "Tam anlatıldığı gibi, çok taze geldi.", "Ailece bayıldık, tekrar sipariş vereceğim.",
@@ -135,19 +135,16 @@ unless Rails.env.production?
     buyers = User.where(role: "buyer").where("email LIKE ?", "alici%@yoremdengelen.test").order(:id).first(10)
 
     buyers.each_with_index do |buyer, index|
+      purchased = seller_products.rotate(index).first(3)
       cart = Cart.for(buyer)
-      seller_products.sample(3, random: random).each do |product|
-        cart.cart_items.create!(product: product, quantity: 1)
-      end
-      next if cart.cart_items.empty?
+      purchased.each { |product| cart.cart_items.create!(product: product, quantity: 1) }
+      Checkout.new(cart).place!
 
-      order = Checkout.new(cart).place!
-      next unless index < 5 # başlangıçta 5 yorum
-
-      product = order.order_items.first.product
-      Comment.transaction do
-        product.comments.create!(user: buyer, body: comment_texts.sample(random: random))
-        buyer.purchase_of(product).rate!(random.rand(3..5))
+      purchased.first(2).each do |product|
+        Comment.transaction do
+          product.comments.create!(user: buyer, body: comment_texts.sample(random: random))
+          buyer.purchase_of(product).rate!(random.rand(3..5))
+        end
       end
     end
 

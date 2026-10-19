@@ -27,16 +27,16 @@ RSpec.describe "Kategori bazlı katalog sayfalama (Pagy)", type: :request do
     html.scan(%r{<h3 class="[^"]*">\s*<a [^>]*>([^<]+)</a>}).flatten
   end
 
-  it "shows the first 6 products of each non-empty category by combined popularity in one row, without pagination" do
+  it "shows the first 4 products of each non-empty category by combined popularity in one row, without pagination" do
     get root_path
 
     sections = response.body.scan(/<section aria-labelledby="(category_[a-z-]+)_heading"/).flatten
     expect(sections).to eq(%w[category_peynir category_zeytin])
-    expect(card_names(response.body).first(6)).to eq(
-      [ "Bakılan Peynir", "Yorumlanan Peynir", "Puanlanan Peynir", "Tıklanan Peynir", "Az Tıklanan Peynir", "Sıfır Peynir 1" ]
+    expect(card_names(response.body).first(4)).to eq(
+      [ "Bakılan Peynir", "Yorumlanan Peynir", "Puanlanan Peynir", "Tıklanan Peynir" ]
     )
-    expect(response.body).not_to include("Sıfır Peynir 2", "Tükenen Bal", "?page=", %(id="category_peynir"), %(aria-label="Sayfalar"))
-    expect(response.body).to include("lg:grid-cols-6", "7 ürün", %(href="/kategoriler/peynir"))
+    expect(response.body).not_to include("Az Tıklanan Peynir", "Sıfır Peynir 1", "Sıfır Peynir 2", "Tükenen Bal", "?page=", %(id="category_peynir"), %(aria-label="Sayfalar"))
+    expect(response.body).to include("lg:grid-cols-4", "7 ürün", %(href="/kategoriler/peynir"))
   end
 
   it "validates the page parameter on the category page: invalid values fall back to page 1, overflow to the last page" do

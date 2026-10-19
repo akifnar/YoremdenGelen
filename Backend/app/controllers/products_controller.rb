@@ -2,7 +2,7 @@ class ProductsController < ApplicationController
   skip_before_action :authenticate_request!
   include ProductComments
 
-  HOME_PER_CATEGORY = 6 # anasayfada her kategori bölümü tek sıra (6 ürün); sayfalama yok
+  HOME_PER_CATEGORY = 4 # anasayfada her kategori bölümü tek sıra (4 ürün); sayfalama yok
 
   before_action :redirect_seller_to_dashboard, only: :index
   # Hover ölçümü misafirlere de açık; aynı istemcinin sayacı şişirmesi sınırlandırılır.
@@ -12,7 +12,7 @@ class ProductsController < ApplicationController
     response.headers["Cache-Control"] = "no-store"
 
     # Her kategorinin ürün sayısı tek GROUP BY sorgusuyla alınır; boş kategoriler hiç sorgulanmaz.
-    # Bölümde en popüler 6 ürün gösterilir, devamı "Tümünü gör" ile kategori sayfasında.
+    # Bölümde en popüler 4 ürün gösterilir, devamı "Tümünü gör" ile kategori sayfasında.
     counts = Product.available.group(:category).count
     @category_sections = Product::CATEGORIES.filter_map do |category|
       next unless counts[category].to_i.positive?
