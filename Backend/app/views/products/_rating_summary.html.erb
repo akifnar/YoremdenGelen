@@ -6,6 +6,6 @@
   <% if metadata&.rating_count.to_i.positive? %>
     <%= render "shared/stars", rating: metadata.average_rating, count: metadata.rating_count %>
   <% else %>
-    <span class="font-hand text-lg text-[var(--subtle)]">henüz puan verilmemiş</span>
+    <span class="text-sm text-[var(--subtle)]">henüz puan verilmemiş</span>
   <% end %>
 </div>

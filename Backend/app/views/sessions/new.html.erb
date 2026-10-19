@@ -1,6 +1,6 @@
 <% content_for :title, "Giriş yap · Yöremden Gelen" %>
 <main class="mx-auto w-full max-w-md px-5 py-12">
-  <h1 class="text-2xl font-semibold">Giriş yap</h1>
+  <h1 class="text-2xl font-extrabold tracking-tight">Giriş yap</h1>
 
   <%# Giriş header'ı (menü, sepet rozeti) değiştirdiği için form tam sayfa (_top) gönderilir. %>
   <%= form_with scope: :user, url: login_path(returnTo: @return_to), class: "mt-6 space-y-4", data: { turbo_frame: "_top" } do |form| %>

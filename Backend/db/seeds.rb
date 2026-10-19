@@ -97,7 +97,8 @@ unless Rails.env.production?
         category: category,
         description: "#{region} yöresinden, #{seller.name} tarafından hazırlanan #{item.downcase(:turkic)}. #{Faker::Lorem.sentence(word_count: 8)}",
         price: Faker::Commerce.price(range: 45.0..650.0, as_string: false),
-        stock: Faker::Number.between(from: 0, to: 120),
+        # Satıcı 1'in ürünleri yorum yazacak alıcılara satılacağı için hepsi stoklu.
+        stock: Faker::Number.between(from: index.zero? ? 20 : 0, to: 120),
         is_active: true
       )
       product.save!
@@ -117,9 +118,10 @@ unless Rails.env.production?
     buyer.save!
   end
 
-  # Örnek siparişler ve yorumlar (yalnızca boş veritabanında): ilk 20 alıcı gerçek sepet → sipariş akışıyla
-  # (Checkout) 3'er ürün alır ve her ürüne ilk yorumunu puanla yazar; satıcılar bazı yorumlara cevap verir,
-  # diğer alıcılar like/dislike bırakır. Böylece puan, yorum ve tepki sayıları gerçek kayıtlardan oluşur.
+  # Örnek siparişler ve yorumlar (yalnızca boş veritabanında): ilk 10 alıcı gerçek sepet → sipariş akışıyla
+  # (Checkout) satıcı 1'in ürünlerinden 3'er ürün alır; böylece bu 10 alıcı satıcı 1'in ürünlerine yorum yazabilir.
+  # Başlangıçta yalnızca ilk 5 alıcı birer yorum (puanla) yazar; satıcı bazılarına cevap verir, diğer alıcılar
+  # like/dislike bırakır. Puan, yorum ve tepki sayıları gerçek kayıtlardan oluşur.
   if Order.none?
     comment_texts = [
       "Tam anlatıldığı gibi, çok taze geldi.", "Ailece bayıldık, tekrar sipariş vereceğim.",
@@ -128,21 +130,24 @@ unless Rails.env.production?
     ]
     reply_texts = [ "Güzel yorumunuz için teşekkür ederiz!", "Afiyet olsun, yine bekleriz.", "Geri bildiriminiz bizim için çok değerli." ]
     random = Faker::Config.random
-    buyers = User.where(role: "buyer").where("email LIKE ?", "alici%@yoremdengelen.test").order(:id).first(20)
+    first_seller = User.find_by!(email: "satici1@yoremdengelen.test")
+    seller_products = first_seller.products.available.order(:id).to_a
+    buyers = User.where(role: "buyer").where("email LIKE ?", "alici%@yoremdengelen.test").order(:id).first(10)
 
-    buyers.each do |buyer|
+    buyers.each_with_index do |buyer, index|
       cart = Cart.for(buyer)
-      Product.available.order(:id).to_a.sample(3, random: random).each do |product|
+      seller_products.sample(3, random: random).each do |product|
         cart.cart_items.create!(product: product, quantity: 1)
       end
       next if cart.cart_items.empty?
 
-      Checkout.new(cart).place!.order_items.includes(:product).each do |item|
-        purchase = buyer.purchase_of(item.product)
-        Comment.transaction do
-          item.product.comments.create!(user: buyer, body: comment_texts.sample(random: random))
-          purchase.rate!(random.rand(3..5)) unless purchase.rated?
-        end
+      order = Checkout.new(cart).place!
+      next unless index < 5 # başlangıçta 5 yorum
+
+      product = order.order_items.first.product
+      Comment.transaction do
+        product.comments.create!(user: buyer, body: comment_texts.sample(random: random))
+        buyer.purchase_of(product).rate!(random.rand(3..5))
       end
     end
 

@@ -1,6 +1,6 @@
 <% content_for :title, "Kayıt ol · Yöremden Gelen" %>
 <main class="mx-auto w-full max-w-md px-5 py-12">
-  <h1 class="text-2xl font-semibold">Hesap oluştur</h1>
+  <h1 class="text-2xl font-extrabold tracking-tight">Hesap oluştur</h1>
 
   <%= form_with model: @user, scope: :user, url: register_path, class: "mt-6 space-y-4" do |form| %>
     <%= render "partials/form_errors", record: @user %>

@@ -12,11 +12,12 @@
     <% end %>
   </div>
 
-  <div class="mt-3 flex items-start justify-between gap-3">
-    <h3 class="min-w-0 text-[15px] font-medium leading-snug text-[var(--ink)]">
+  <%# İsim ve fiyat alt alta: anasayfadaki 6 sütunlu dar kartlarda da isim sıkışmaz. %>
+  <div class="mt-3 flex flex-1 flex-col gap-1">
+    <h3 class="min-h-[2.5rem] min-w-0 font-sans text-sm font-medium leading-5 text-[var(--ink)]">
       <%= link_to product.name, product_path(product), data: { turbo_frame: "main" }, class: "line-clamp-2 hover:text-[var(--blue-ink)]" %>
     </h3>
-    <p class="shrink-0 font-display text-[15px] font-bold tabular-nums text-[var(--ink)]"><%= format_price(product.price) %></p>
+    <p class="mt-auto font-display text-base font-bold tabular-nums text-[var(--ink)]"><%= format_price(product.price) %></p>
   </div>
 
   <%# Kart kategori frame'i içinde; form main frame'ini hedefler ki misafirin login yönlendirmesi kategori kutusunda değil sayfa içeriğinde açılsın. %>

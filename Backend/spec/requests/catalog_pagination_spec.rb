@@ -27,32 +27,25 @@ RSpec.describe "Kategori bazlı katalog sayfalama (Pagy)", type: :request do
     html.scan(%r{<h3 class="[^"]*">\s*<a [^>]*>([^<]+)</a>}).flatten
   end
 
-  it "shows the first 6 products of each non-empty category by combined popularity, with a link to the next page" do
+  it "shows the first 6 products of each non-empty category by combined popularity in one row, without pagination" do
     get root_path
 
-    frames = response.body.scan(/<turbo-frame [^>]*id="(category_[a-z-]+)"/).flatten
-    expect(frames).to eq(%w[category_peynir category_zeytin])
+    sections = response.body.scan(/<section aria-labelledby="(category_[a-z-]+)_heading"/).flatten
+    expect(sections).to eq(%w[category_peynir category_zeytin])
     expect(card_names(response.body).first(6)).to eq(
       [ "Bakılan Peynir", "Yorumlanan Peynir", "Puanlanan Peynir", "Tıklanan Peynir", "Az Tıklanan Peynir", "Sıfır Peynir 1" ]
     )
-    expect(response.body).not_to include("Sıfır Peynir 2", "Tükenen Bal")
-    expect(response.body).to include(%(href="/kategoriler/peynir?page=2"), "7 ürün · Sayfa 1/2")
+    expect(response.body).not_to include("Sıfır Peynir 2", "Tükenen Bal", "?page=", %(id="category_peynir"), %(aria-label="Sayfalar"))
+    expect(response.body).to include("lg:grid-cols-6", "7 ürün", %(href="/kategoriler/peynir"))
   end
 
-  it "renders the requested page of a single category inside its frame" do
-    get category_path("peynir", page: 2), headers: { "Turbo-Frame" => "category_peynir" }
+  it "validates the page parameter on the category page: invalid values fall back to page 1, overflow to the last page" do
+    12.times { |index| Product.create!(name: "Ek Peynir #{index}", description: "x", category: "Peynir", price: 100, stock: 3) }
 
-    expect(response).to have_http_status(:ok)
-    expect(card_names(response.body)).to eq([ "Sıfır Peynir 2" ])
-    expect(response.body).to include(%(<turbo-frame class="block scroll-mt-24" id="category_peynir">), %(href="/kategoriler/peynir?page=1"))
-  end
-
-  it "validates the page parameter: invalid values fall back to page 1, overflow to the last page" do
-    frame = { "Turbo-Frame" => "category_peynir" }
-    get category_path("peynir", page: "abc"), headers: frame
+    get category_path("peynir", page: "abc"), headers: { "Turbo-Frame" => "main" }
     expect(response.body).to include("Sayfa 1/2")
 
-    get category_path("peynir", page: 999), headers: frame
+    get category_path("peynir", page: 999), headers: { "Turbo-Frame" => "main" }
     expect(response.body).to include("Sayfa 2/2")
   end
 

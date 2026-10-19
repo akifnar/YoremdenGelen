@@ -29,7 +29,7 @@
 
   <div class="flex flex-col px-6 py-8 text-[var(--ink)] sm:px-10 sm:py-12 lg:px-12">
     <div class="flex items-center justify-between gap-4 border-b border-[var(--line)] pb-5">
-      <p class="text-xs font-semibold uppercase tracking-widest text-[var(--subtle)]"><%= product.category.presence || "Yöresel ürün" %></p>
+      <p class="font-sans text-xs font-semibold uppercase tracking-widest text-[var(--subtle)]"><%= product.category.presence || "Yöresel ürün" %></p>
       <p class="text-xs text-[var(--subtle)]"><%= product.available? ? "Stokta" : "Tükendi" %></p>
     </div>
     <h1 class="mt-7 font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl"><%= product.name %></h1>

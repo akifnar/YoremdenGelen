@@ -18,7 +18,7 @@ RSpec.describe "Ürünler", type: :request do
     get root_path
     ActiveSupport::Notifications.unsubscribe(subscriber)
 
-    expect(response.body.scan(%r{/rails/active_storage/blobs/}).size).to eq(CategoryPagination::SECTION_PER_PAGE)
+    expect(response.body.scan(%r{/rails/active_storage/blobs/}).size).to eq(ProductsController::HOME_PER_CATEGORY)
     expect(attachment_queries.length).to be <= 4
   ensure
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber

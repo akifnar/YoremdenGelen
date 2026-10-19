@@ -86,6 +86,7 @@
     --texture-board: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     --texture-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
     --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-display: "Bricolage Grotesque", system-ui, sans-serif;
     --font-hand: "Caveat", ui-rounded, cursive;
 
@@ -97,15 +98,7 @@
     --ink: #221e17;
     --subtle: #6e675c;
     --accent: var(--blue);
-    font-family:
-        "Instrument Sans",
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+    font-family: var(--font-sans);
     color: var(--ink);
     background: var(--board);
     font-synthesis: none;
@@ -114,10 +107,23 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Tailwind tema anahtarları: font-display, font-hand sınıfları. */
+/* Tailwind tema anahtarları: font-sans (metin), font-display (başlık), font-hand (yalnızca süs notları).
+   --font-sans Tailwind'in varsayılan yazı tipini de belirler; böylece preflight ve font-sans aynı fontu kullanır. */
 @theme {
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-display: "Bricolage Grotesque", system-ui, sans-serif;
     --font-hand: "Caveat", ui-rounded, cursive;
+}
+
+/* Yazı tipi uyumu: tüm başlıklar başlık fontuyla, metin Instrument Sans ile. Base katmanında olduğu için
+   bir başlıkta font-sans gibi bir sınıf verilirse o kazanır. */
+@layer base {
+    h1,
+    h2,
+    h3 {
+        font-family: var(--font-display);
+        letter-spacing: -0.01em;
+    }
 }
 
 /* Pano: lacivert zemin + ince gren dokusu. */

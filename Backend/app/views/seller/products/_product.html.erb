@@ -2,7 +2,7 @@
 <li id="<%= dom_id(product) %>" class="flex flex-wrap items-center gap-4 p-4 sm:flex-nowrap">
   <%= image_tag product_image_url(product), alt: "", loading: "lazy", class: "h-16 w-16 shrink-0 object-cover" %>
   <div class="min-w-0 flex-1">
-    <h3 class="truncate font-medium text-stone-900"><%= product.name %></h3>
+    <h3 class="truncate font-medium text-[var(--ink)]"><%= product.name %></h3>
     <p class="mt-1 text-sm text-stone-600">
       <%= format_price(product.price) %>
       <span class="px-2 text-stone-400">·</span>

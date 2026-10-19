@@ -2,7 +2,7 @@
 <%# "Düzenle" bağlantıları ve Turbo Stream yanıtları bu frame'i değiştirir. %>
 <%= turbo_frame_tag "seller_product_form" do %>
   <section class="mt-7 border border-stone-200 bg-[var(--paper-hi)] p-5 sm:p-7">
-    <h2 class="text-lg font-semibold text-stone-900"><%= product.persisted? ? "Ürünü düzenle" : "Yeni ürün ekle" %></h2>
+    <h2 class="text-lg font-semibold text-[var(--ink)]"><%= product.persisted? ? "Ürünü düzenle" : "Yeni ürün ekle" %></h2>
 
     <%= form_with model: [ :seller, product ], class: "mt-5 grid gap-4 sm:grid-cols-2" do |form| %>
       <%= render "partials/form_errors", record: product, extra_class: "sm:col-span-2" %>
