@@ -66,7 +66,7 @@ RSpec.describe "Kimlik doğrulama", type: :request do
     expect(user.reload.remember_token).to eq(User.token_digest(remember_cookie))
 
     user.update!(session_token_expires_at: 1.minute.ago)
-    get settings_path
+    get cart_path
 
     expect(response).to have_http_status(:ok)
     refreshed_cookie = encrypted_cookie(:remember_token)

@@ -55,7 +55,8 @@
           <div class="<%= menu_panel %> right-0 w-48">
             <div id="profile_menu" class="<%= menu_note %>">
               <span class="tape" aria-hidden="true"></span>
-              <% if current_user.buyer? || current_user.seller? %>
+              <%# Alıcıların ayarlar menüsü şimdilik kapalı; yalnızca satıcılar görür. %>
+              <% if current_user.seller? %>
                 <%= link_to "Ayarlar", settings_path, data: main.merge(action: "dropdown#select"), aria: { label: "Ayarlar" }, class: menu_item %>
               <% end %>
               <%= button_to "Çıkış yap", logout_path, method: :delete, form_class: "block",

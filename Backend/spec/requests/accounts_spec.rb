@@ -56,40 +56,49 @@ RSpec.describe "Hesaplar ve profil", type: :request do
   end
 
   describe "ayarlar" do
-    it "is available to buyers and sellers, not admins or guests" do
+    it "is available only to sellers for now, not buyers, admins or guests" do
       get settings_path
       expect(response).to redirect_to(login_path(returnTo: "/ayarlar"))
 
-      sign_in_stubbed(admin)
-      get settings_path
-      expect(response).to redirect_to(root_path)
-
-      { buyer => false, seller => true }.each do |user, shows_avatar|
+      [ buyer, admin ].each do |user|
         sign_in_stubbed(user)
         get settings_path
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Profilin", "Ad soyad", "Mevcut şifre")
-        expect(response.body.include?("Profil resmi")).to be(shows_avatar)
+        expect(response).to redirect_to(root_path)
       end
+
+      sign_in_stubbed(seller)
+      get settings_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Profilin", "Ad soyad", "Mevcut şifre", "Profil resmi")
     end
 
-    it "puts settings (buyers and sellers only) and logout in the profile menu" do
-      sign_in_stubbed(buyer)
+    it "puts settings (sellers only) and logout in the profile menu" do
+      sign_in_stubbed(seller)
       get about_path
       profile_menu = response.body[/<div id="profile_menu".*?<\/div>/m]
       expect(profile_menu).to include(%(aria-label="Ayarlar"), "Çıkış yap")
 
-      sign_in_stubbed(admin)
-      get about_path
-      expect(response.body).not_to include(%(aria-label="Ayarlar"))
-      expect(response.body).to include("Çıkış yap")
+      [ buyer, admin ].each do |user|
+        sign_in_stubbed(user)
+        get about_path
+        expect(response.body).not_to include(%(aria-label="Ayarlar"))
+        expect(response.body).to include("Çıkış yap")
+      end
+    end
+
+    it "does not let buyers update their profile for now" do
+      sign_in_stubbed(buyer)
+      expect(buyer).not_to receive(:save)
+
+      patch settings_path, params: { user: { name: "Yeni Ad", current_password: "secret123" } }
+      expect(response).to redirect_to(root_path)
     end
 
     context "when updating" do
-      before { sign_in_stubbed(buyer) }
+      before { sign_in_stubbed(seller) }
 
       it "requires the current password" do
-        expect(buyer).not_to receive(:save)
+        expect(seller).not_to receive(:save)
 
         patch settings_path, params: { user: { name: "Yeni Ad" } }
         expect(response).to have_http_status(:unprocessable_content)
@@ -97,12 +106,12 @@ RSpec.describe "Hesaplar ve profil", type: :request do
       end
 
       it "rejects a wrong current password (bcrypt comparison)" do
-        expect(buyer).not_to receive(:save)
+        expect(seller).not_to receive(:save)
 
         patch settings_path, params: { user: { name: "Yeni Ad", current_password: "yanlis-sifre" } }
         expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Mevcut şifre hatalı")
-        expect(buyer.name).not_to eq("Yeni Ad")
+        expect(seller.name).not_to eq("Yeni Ad")
       end
 
       it "runs model validations after the password check" do
@@ -110,20 +119,6 @@ RSpec.describe "Hesaplar ve profil", type: :request do
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Name is too long")
-      end
-
-      it "lets buyers change only their name" do
-        expect(buyer).to receive(:save).and_return(true)
-        avatar = Rack::Test::UploadedFile.new(StringIO.new("png"), "image/png", original_filename: "ben.png")
-
-        get settings_path
-        expect(response.body).not_to include("Profil resmi")
-
-        patch settings_path, params: { user: { name: "Yeni Ad", avatar: avatar, role: "admin", current_password: "secret123" } }
-
-        expect(response).to redirect_to(settings_path)
-        expect(buyer).to have_attributes(name: "Yeni Ad", role: "buyer")
-        expect(buyer.attachment_changes["avatar"]).to be_nil
       end
     end
 

@@ -1,5 +1,6 @@
+# Profil ayarları. Alıcılar için şimdilik kapalı: yalnızca satıcılar açabilir.
 class SettingsController < ApplicationController
-  before_action :require_buyer_or_seller!
+  before_action :require_seller!
 
   def show
     @user = current_user
@@ -24,8 +25,8 @@ class SettingsController < ApplicationController
 
   private
 
-  def require_buyer_or_seller!
-    require_role!("buyer", "seller", message: "Ayarlar yalnızca alıcı ve satıcı hesaplarına açıktır")
+  def require_seller!
+    require_role!("seller", message: "Ayarlar şimdilik yalnızca satıcı hesaplarına açıktır")
   end
 
   def current_password_error

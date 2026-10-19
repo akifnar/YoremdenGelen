@@ -62,7 +62,8 @@ RSpec.describe "HTML sayfaları ve Turbo yanıtları", type: :request do
       post login_path(returnTo: "/sepet"), params: { user: { email: user.email, password: "secret123" } }
       expect(response).to redirect_to("/sepet")
       follow_redirect!
-      expect(response.body).to include(%(aria-label="Ayarlar"), %(id="cart_badge"), "Sepetiniz henüz boş.")
+      expect(response.body).to include("Çıkış yap", %(id="cart_badge"), "Sepetiniz henüz boş.")
+      expect(response.body).not_to include(%(aria-label="Ayarlar")) # alıcıların ayarlar menüsü şimdilik kapalı
     end
 
     it "re-renders registration errors" do
