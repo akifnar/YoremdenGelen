@@ -51,6 +51,7 @@ RSpec.describe Comment, type: :model do
       comment = product.comments.create!(user: buyer, body: "Harika")
       comment.create_reply!(product: product, user: seller, body: "Teşekkürler")
       other_buyer = User.create!(name: "Diğer", email: "other@example.com", password: "secret123")
+      ProductPurchase.record!(user: other_buyer, product: product)
       CommentReaction.toggle!(comment: comment, user: other_buyer, kind: "like")
       expect(product.metrics.reload.comment_count).to eq(1)
 

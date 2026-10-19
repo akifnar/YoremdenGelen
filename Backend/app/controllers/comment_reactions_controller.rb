@@ -1,4 +1,4 @@
-# Alıcıların yorumlara like/dislike'ı. Aynı tepkiye tekrar basmak geri alır, diğerine basmak değiştirir.
+# Ürünü satın almış alıcıların yorumlara like/dislike'ı. Aynı tepkiye tekrar basmak geri alır, diğerine basmak değiştirir.
 class CommentReactionsController < ApplicationController
   before_action -> { require_role!("buyer", message: "Yalnızca alıcılar tepki verebilir") }
 
@@ -11,12 +11,13 @@ class CommentReactionsController < ApplicationController
     kind = params[:kind].to_s
     return respond_with_error("Geçersiz tepki", :unprocessable_entity) unless CommentReaction::KINDS.include?(kind)
     return respond_with_error("Kendi yorumuna tepki veremezsin", :forbidden) if comment.user_id == current_user.id
+    return respond_with_error("Tepki vermek için bu ürünü satın almış olmalısın", :forbidden) unless current_user.purchase_of(comment.product)
 
     reaction = CommentReaction.toggle!(comment: comment, user: current_user, kind: kind)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(dom_id(comment, :reactions), partial: "comments/reactions",
-                                                  locals: { comment: comment.reload, my_reaction: reaction&.kind })
+                                                  locals: { comment: comment.reload, my_reaction: reaction&.kind, can_react: true })
       end
       format.html { redirect_to product_path(comment.product_id), status: :see_other }
     end

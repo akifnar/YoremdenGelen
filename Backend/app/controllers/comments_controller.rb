@@ -14,7 +14,7 @@ class CommentsController < ApplicationController
   def index
     @product = Product.active.find(params[:product_id])
     load_product_comments(@product, page: requested_page)
-    render partial: "comments/list", locals: { product: @product, comments: @comments, pagy: @comments_pagy, my_reactions: @my_reactions }
+    render partial: "comments/list", locals: { product: @product, comments: @comments, pagy: @comments_pagy, my_reactions: @my_reactions, can_react: @purchase.present? }
   end
 
   # Controller seviyesi: yalnızca bu ürünü satın almış alıcı (product_purchases'te satır), dolu ve en fazla
@@ -41,7 +41,7 @@ class CommentsController < ApplicationController
         @product.reload
         render turbo_stream: [
           turbo_stream.remove("comments_empty"),
-          turbo_stream.prepend("comments", partial: "comments/comment", locals: { comment: @comment, product: @product, my_reaction: nil }),
+          turbo_stream.prepend("comments", partial: "comments/comment", locals: { comment: @comment, product: @product, my_reaction: nil, can_react: true }),
           turbo_stream.replace("comment_form", partial: "comments/form", locals: { product: @product, purchase: @purchase.reload }),
           turbo_stream.replace("comments_count", partial: "comments/count", locals: { product: @product }),
           turbo_stream.replace(dom_id(@product, :rating), partial: "products/rating_summary", locals: { product: @product })

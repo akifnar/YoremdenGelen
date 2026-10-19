@@ -15,6 +15,7 @@ RSpec.describe CommentReaction, type: :model do
   end
 
   it "adds, switches and removes a reaction while keeping the counters in sync" do
+    ProductPurchase.record!(user: reader, product: product)
     CommentReaction.toggle!(comment: comment, user: reader, kind: "like")
     expect(counts).to eq([ 1, 0 ])
 
@@ -31,5 +32,13 @@ RSpec.describe CommentReaction, type: :model do
     expect { CommentReaction.toggle!(comment: comment, user: seller, kind: "like") }.to raise_error(ActiveRecord::RecordInvalid, /Yalnızca alıcılar/)
     expect { CommentReaction.toggle!(comment: comment, user: author, kind: "like") }.to raise_error(ActiveRecord::RecordInvalid, /Kendi yorumuna/)
     expect(counts).to eq([ 0, 0 ])
+  end
+
+  it "accepts reactions only from buyers who purchased the product" do
+    expect { CommentReaction.toggle!(comment: comment, user: reader, kind: "like") }.to raise_error(ActiveRecord::RecordInvalid, /satın almış olmalısın/)
+
+    ProductPurchase.record!(user: reader, product: product)
+    CommentReaction.toggle!(comment: comment, user: reader, kind: "like")
+    expect(counts).to eq([ 1, 0 ])
   end
 end

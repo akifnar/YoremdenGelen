@@ -151,13 +151,18 @@ unless Rails.env.production?
     Comment.top_level.includes(product: :seller).find_each do |comment|
       seller = comment.product.seller
       comment.create_reply!(product: comment.product, user: seller, body: reply_texts.sample(random: random)) if seller && random.rand < 0.4
-      buyers.sample(3, random: random).each do |buyer|
-        next if buyer.id == comment.user_id
-
+      # Tepkiyi yalnızca ürünü satın almış (yorum sahibi dışındaki) demo alıcılar bırakır.
+      purchasers = buyers.select { |buyer| buyer.id != comment.user_id && buyer.purchase_of(comment.product) }
+      purchasers.each do |buyer|
         CommentReaction.toggle!(comment: comment, user: buyer, kind: random.rand < 0.8 ? "like" : "dislike")
       end
     end
   end
+
+  # Başlangıç kullanıcısı (user@mail.com) her ürünü satın almış sayılır: her ürüne yorum yazabilir ve
+  # yorumlara tepki verebilir. Sipariş açılmaz (stoğu biten ürünler de dahil); yalnızca yorum yetkisi satırı yazılır.
+  initial_user = User.find_by!(email: initial_accounts.first[:email])
+  Product.active.find_each { |product| ProductPurchase.record!(user: initial_user, product: product) }
 
   puts "Seed tamam: #{User.where(role: "seller").count} satıcı, #{User.where(role: "buyer").count} alıcı, #{Product.count} ürün, " \
        "#{Order.count} sipariş, #{Comment.top_level.count} yorum, #{Comment.where.not(parent_id: nil).count} satıcı cevabı. Demo şifresi: #{demo_password}"

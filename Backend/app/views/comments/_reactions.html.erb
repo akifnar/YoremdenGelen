@@ -1,6 +1,7 @@
-<%# locals: (comment:, my_reaction:) %>
-<%# Like/dislike yalnızca alıcılardan ve başkasının yorumuna; diğerleri yalnızca sayıları görür. %>
-<% can_react = current_user&.buyer? && comment.user_id != current_user.id %>
+<%# locals: (comment:, my_reaction:, can_react:) %>
+<%# can_react: oturumdaki alıcı bu ürünü satın almış mı (purchase satırı; listede bir kez hesaplanır).
+    Like/dislike yalnızca ürünü satın almış alıcılardan ve başkasının yorumuna; diğerleri yalnızca sayıları görür. %>
+<% can_react &&= current_user && comment.user_id != current_user.id %>
 <div id="<%= dom_id(comment, :reactions) %>" class="mt-3 flex items-center gap-2 text-sm">
   <% [ [ "like", "👍", comment.likes_count, "Beğen" ], [ "dislike", "👎", comment.dislikes_count, "Beğenme" ] ].each do |kind, icon, count, label| %>
     <% active = my_reaction == kind %>

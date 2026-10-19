@@ -20,7 +20,7 @@ class CommentRepliesController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(parent, partial: "comments/comment",
-                                                  locals: { comment: parent.reload, product: parent.product, my_reaction: nil })
+                                                  locals: { comment: parent.reload, product: parent.product, my_reaction: nil, can_react: false })
       end
       format.html { redirect_to product_path(parent.product), notice: "Cevabın eklendi.", status: :see_other }
     end

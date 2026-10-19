@@ -133,8 +133,12 @@ RSpec.describe "Yorumlar", type: :request do
       product.comments.create!(user: buyer, body: "Harika")
     end
 
-    it "lets other buyers toggle reactions" do
+    it "lets other buyers who purchased the product toggle reactions" do
+      purchase!(other_buyer)
       sign_in_stubbed(other_buyer)
+
+      get product_path(product)
+      expect(response.body).to include(comment_reaction_path(comment))
 
       post comment_reaction_path(comment), params: { kind: "like" }, headers: turbo_stream
       expect(response.body).to include(%(target="reactions_comment_#{comment.id}"), 'aria-pressed="true"')
@@ -153,10 +157,23 @@ RSpec.describe "Yorumlar", type: :request do
       post comment_reaction_path(comment), params: { kind: "dislike" }, headers: turbo_stream
       expect(response.body).to include("Kendi yorumuna tepki veremezsin")
 
+      purchase!(other_buyer)
       sign_in_stubbed(other_buyer)
       post comment_reaction_path(comment), params: { kind: "love" }, headers: turbo_stream
       expect(response).to have_http_status(:unprocessable_content)
       expect(CommentReaction.count).to eq(0)
+    end
+
+    it "hides the buttons from and rejects buyers who did not purchase the product" do
+      sign_in_stubbed(other_buyer)
+
+      get product_path(product)
+      expect(response.body).not_to include(comment_reaction_path(comment))
+
+      post comment_reaction_path(comment), params: { kind: "like" }, headers: turbo_stream
+      expect(response).to have_http_status(:forbidden)
+      expect(response.body).to include("satın almış olmalısın")
+      expect(comment.reload.likes_count).to eq(0)
     end
   end
 

@@ -1,4 +1,4 @@
-<%# locals: (product:, comments:, pagy:, my_reactions:) %>
+<%# locals: (product:, comments:, pagy:, my_reactions:, can_react:) %>
 <%# Sayfa bağlantıları bu frame'i hedefler: CommentsController#index yalnızca listeyi döndürür, ürün sayfası
     (ve tıklanma sayacı) yeniden çalışmaz. %>
 <%= turbo_frame_tag "product_comments", class: "block" do %>
@@ -7,7 +7,7 @@
   <% end %>
   <ul id="comments" class="mt-6 space-y-5">
     <% comments.each do |comment| %>
-      <%= render "comments/comment", comment: comment, product: product, my_reaction: my_reactions[comment.id] %>
+      <%= render "comments/comment", comment: comment, product: product, my_reaction: my_reactions[comment.id], can_react: can_react %>
     <% end %>
   </ul>
   <%= render "shared/pagination", pagy: pagy %>

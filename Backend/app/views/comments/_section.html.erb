@@ -7,5 +7,5 @@
     <%= render "comments/form", product: product, purchase: purchase %>
   <% end %>
 
-  <%= render "comments/list", product: product, comments: comments, pagy: pagy, my_reactions: my_reactions %>
+  <%= render "comments/list", product: product, comments: comments, pagy: pagy, my_reactions: my_reactions, can_react: purchase.present? %>
 </section>

@@ -1,4 +1,5 @@
 # Bir alıcının bir yoruma tepkisi: like ya da dislike. Alıcı başına yorum başına tek satır (benzersiz index).
+# Yalnızca yorumun ait olduğu ürünü satın almış alıcılar tepki verebilir.
 class CommentReaction < ApplicationRecord
   KINDS = %w[like dislike].freeze
 
@@ -42,5 +43,8 @@ class CommentReaction < ApplicationRecord
     errors.add(:base, "Yalnızca alıcılar tepki verebilir") unless user&.buyer?
     errors.add(:base, "Kendi yorumuna tepki veremezsin") if comment && comment.user_id == user_id
     errors.add(:base, "Yalnızca alıcı yorumlarına tepki verilebilir") if comment&.reply?
+    if user&.buyer? && comment && !user.purchase_of(comment.product)
+      errors.add(:base, "Tepki vermek için bu ürünü satın almış olmalısın")
+    end
   end
 end
