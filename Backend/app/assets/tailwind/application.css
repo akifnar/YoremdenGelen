@@ -63,10 +63,10 @@
 }
 
 :root {
-    /* "Pano ve kâğıt" teması (bilkenters.com'daki tasarım dilinden): lacivert dokulu pano zemini,
-       üzerine bantla tutturulmuş krem kâğıtlar, mürekkep renkli metin, mavi eylem rengi. */
-    --board: #0d1322;
-    --board-deep: #0a1120;
+    /* "Pano ve kâğıt" teması (bilkenters.com'daki tasarım dilinden): ceviz rengi dokulu pano zemini,
+       üzerine bantla tutturulmuş krem kâğıtlar, mürekkep renkli metin, zeytin yeşili eylem rengi. */
+    --board: #2b2119;
+    --board-deep: #211a13;
     --on-board: hsla(41, 26%, 88%, 0.72);
     --on-board-strong: #f6f1e6;
     --board-line: hsla(41, 26%, 88%, 0.14);
@@ -74,8 +74,10 @@
     --paper-hi: #f6f1e6;
     --kraft: #e9dfc6;
     --ink-2: #3a332a;
-    --blue: #4c7df0;
-    --blue-ink: #2f5fd0;
+    /* Zeytin yeşili eylem rengi: --accent düğme zemini (krem metinle 5:1), --accent-ink kâğıt üzerindeki
+       bağlantı/vurgu metni ve düğme hover'ı (kâğıtta 6.8:1). Pano üzerindeki odak halkaları --amber kullanır. */
+    --accent: #5b6f2c;
+    --accent-ink: #455620;
     --amber: #d9a62e;
     --star: #f5b301;
     --marker: rgba(255, 222, 0, 0.5);
@@ -96,7 +98,6 @@
     --line: rgba(34, 30, 23, 0.14);
     --ink: #221e17;
     --subtle: #6e675c;
-    --accent: var(--blue);
     font-family:
         "Instrument Sans",
         Inter,
@@ -120,7 +121,7 @@
     --font-hand: "Caveat", ui-rounded, cursive;
 }
 
-/* Pano: lacivert zemin + ince gren dokusu. */
+/* Pano: ceviz rengi zemin + ince gren dokusu. */
 .board {
     position: relative;
     background-color: var(--board);
@@ -180,18 +181,18 @@
 }
 
 /* Mavi eylem düğmesi: basılı his ve üzerinden geçen parlama. */
-.btn-blue {
+.btn-accent {
     position: relative;
     overflow: hidden;
     isolation: isolate;
     border-radius: 4px;
-    background: var(--blue);
+    background: var(--accent);
     color: var(--on-board-strong);
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
     transition: background-color 180ms ease, transform 120ms ease, box-shadow 180ms ease;
 }
 
-.btn-blue::after {
+.btn-accent::after {
     content: "";
     position: absolute;
     top: -40%;
@@ -205,13 +206,13 @@
     transition: transform 660ms cubic-bezier(0.3, 0.7, 0.3, 1);
 }
 
-.btn-blue:hover {
-    background: var(--blue-ink);
+.btn-accent:hover {
+    background: var(--accent-ink);
     transform: translateY(1px);
     box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.3);
 }
 
-.btn-blue:hover::after {
+.btn-accent:hover::after {
     transform: translateX(320%) skewX(-18deg);
 }
 
@@ -268,7 +269,7 @@
 }
 
 .star-input input:focus-visible + label {
-    outline: 2px solid var(--blue);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
     border-radius: 3px;
 }
@@ -327,22 +328,22 @@ button:focus-visible,
 .seller-file:focus,
 .seller-publish:focus-visible {
     outline: none;
-    border-color: #26734d;
-    box-shadow: 0 0 0 3px rgb(38 115 77 / 16%);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgb(91 111 44 / 22%);
 }
 
 .seller-file::file-selector-button {
     margin-right: 0.75rem;
     border: 0;
-    background: #e8eee7;
+    background: var(--kraft);
     padding: 0.5rem 0.75rem;
-    color: #123b2d;
+    color: var(--ink);
     cursor: pointer;
     transition: background-color 180ms ease;
 }
 
 .seller-file:hover::file-selector-button {
-    background: #d7e4d9;
+    background: #ddd0b0;
 }
 
 .seller-publish {
@@ -353,7 +354,7 @@ button:focus-visible,
 }
 
 .seller-publish:hover:not(:disabled) {
-    box-shadow: 0 4px 12px rgb(18 59 45 / 18%);
+    box-shadow: 0 4px 12px rgb(69 86 32 / 22%);
     transform: translateY(-1px);
 }
 
@@ -382,8 +383,10 @@ button:focus-visible,
     background-color: var(--amber);
 }
 
-/* Turbo Frame yüklenirken (fotoğraf geçişi vb.) hafif soluklaştır */
-turbo-frame[busy] img {
+/* Kart fotoğrafı ‹ › ile değişirken yalnızca o kartın görseli soluklaşır. Kural genel "turbo-frame[busy] img"
+   olsaydı, main frame'ini hedefleyen formlar (Sepete ekle) istek süresince sayfadaki tüm ürün görsellerini
+   soldurup geri açar, katalog baştan yükleniyormuş gibi görünürdü. */
+turbo-frame.card-photo[busy] img {
     opacity: 0.6;
     transition: opacity 120ms ease;
 }

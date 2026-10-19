@@ -6,11 +6,11 @@
   <section aria-labelledby="category_<%= slug %>_heading">
     <div class="flex items-baseline justify-between gap-4">
       <h2 id="category_<%= slug %>_heading" class="font-display text-2xl font-extrabold tracking-tight text-[var(--ink)]">
-        <%= link_to category, category_path(slug), data: { turbo_frame: "main" }, class: "marker px-0.5 hover:text-[var(--blue-ink)]" %>
+        <%= link_to category, category_path(slug), data: { turbo_frame: "main" }, class: "marker px-0.5 hover:text-[var(--accent-ink)]" %>
       </h2>
       <p class="text-sm text-[var(--subtle)] tabular-nums">
         <%= pagy.count %> ürün<% if pagy.pages > 1 %> · Sayfa <%= pagy.page %>/<%= pagy.pages %><% end %>
-        <%= link_to "Tümünü gör →", category_path(slug), data: { turbo_frame: "main" }, class: "ml-3 font-hand text-lg text-[var(--blue-ink)] hover:underline" %>
+        <%= link_to "Tümünü gör →", category_path(slug), data: { turbo_frame: "main" }, class: "ml-3 font-hand text-lg text-[var(--accent-ink)] hover:underline" %>
       </p>
     </div>
     <div class="mt-5 grid grid-cols-3 gap-x-5 gap-y-10">

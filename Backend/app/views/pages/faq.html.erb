@@ -17,10 +17,10 @@
   <section aria-label="Sıkça sorulan sorular" class="mt-7 space-y-3">
     <% questions.each_with_index do |(question, answer), index| %>
       <details class="group rounded-2xl border border-[var(--line)] bg-[var(--paper-hi)] p-5 shadow-sm transition open:border-[var(--line)] open:shadow-md sm:p-6">
-        <summary class="flex cursor-pointer list-none items-center gap-4 font-semibold text-[var(--ink)] marker:hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)]">
-          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--kraft)] text-sm font-bold text-[var(--blue-ink)]">0<%= index + 1 %></span>
+        <summary class="flex cursor-pointer list-none items-center gap-4 font-semibold text-[var(--ink)] marker:hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--kraft)] text-sm font-bold text-[var(--accent-ink)]">0<%= index + 1 %></span>
           <span class="flex-1"><%= question %></span>
-          <span class="text-xl text-[var(--blue-ink)] transition group-open:rotate-45" aria-hidden="true">+</span>
+          <span class="text-xl text-[var(--accent-ink)] transition group-open:rotate-45" aria-hidden="true">+</span>
         </summary>
         <p class="ml-13 mt-4 max-w-2xl leading-7 text-stone-600"><%= answer %></p>
       </details>

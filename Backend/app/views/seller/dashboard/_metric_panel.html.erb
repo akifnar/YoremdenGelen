@@ -13,7 +13,7 @@
       <li tabindex="0" class="group relative grid grid-cols-[minmax(0,8rem)_1fr] items-center gap-3 outline-none focus-visible:bg-[var(--kraft)] sm:grid-cols-[minmax(0,10rem)_1fr]">
         <span class="truncate text-xs text-stone-600" title="<%= row[:product].name %>"><%= row[:product].name %></span>
         <span class="flex items-center gap-2 border-l border-stone-300">
-          <span class="block h-4 rounded-r-[4px] bg-[#047857] transition-opacity group-hover:opacity-80"
+          <span class="block h-4 rounded-r-[4px] bg-[var(--accent)] transition-opacity group-hover:opacity-80"
                 style="width: <%= (value / scale * 100).clamp(0, 100).round(2) %>%; min-width: <%= value.positive? ? 2 : 0 %>px"></span>
           <span class="shrink-0 text-xs font-semibold tabular-nums text-stone-800"><%= format.call(value) %></span>
         </span>
