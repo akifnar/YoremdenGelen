@@ -1,0 +1,71 @@
+<% content_for :title, "Satıcı paneli · Yöremden Gelen" %>
+<% rating_format = ->(value) { number_with_precision(value, precision: 1, separator: ",") } %>
+<main class="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
+  <header class="flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-6">
+    <div>
+      <p class="text-sm font-medium text-[var(--blue-ink)]">Satıcı paneli</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight text-[var(--ink)]">Ürünlerin nasıl ilgi görüyor?</h1>
+      <p class="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
+        Yayındaki ürünlerinin tıklanma, üzerine gelinme, değerlendirme ve yorum sayıları. Kendi ziyaretlerin sayılmaz.
+      </p>
+    </div>
+    <%= link_to "Ürünlerini yönet", seller_products_path, class: button_classes(variant: :primary, size: :md) %>
+  </header>
+
+  <% if @rows.empty? %>
+    <p class="mt-8 border border-stone-200 bg-[var(--paper-hi)] p-5 text-sm text-stone-600">
+      Henüz yayında ürünün yok. <%= link_to "İlk ürününü paylaş", seller_products_path, class: "font-semibold text-[var(--blue-ink)] underline" %>; ilgi verileri burada görünecek.
+    </p>
+  <% else %>
+    <section aria-label="Toplamlar" class="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <% [ [ "Toplam tıklanma", compact_number(@totals[:click_count]), nil ],
+           [ "Toplam üzerine gelinme", compact_number(@totals[:hover_count]), nil ],
+           [ "Ortalama puan", "#{rating_format.call(@overall_rating)} / 5", "#{compact_number(@totals[:rating_count])} değerlendirme" ],
+           [ "Toplam yorum", compact_number(@totals[:comment_count]), nil ] ].each do |label, value, note| %>
+        <div class="border border-stone-200 bg-[var(--paper-hi)] p-4">
+          <p class="text-xs text-stone-500"><%= label %></p>
+          <p class="mt-1 text-2xl font-semibold text-[var(--ink)]" data-kpi><%= value %></p>
+          <% if note %><p class="mt-0.5 text-xs text-stone-500"><%= note %></p><% end %>
+        </div>
+      <% end %>
+    </section>
+
+    <section aria-label="Ürün bazında ilgi grafiği" class="mt-6 grid gap-4 md:grid-cols-2">
+      <%= render "seller/dashboard/metric_panel", title: "Tıklanma", subtitle: "Ürün sayfasının açılma sayısı", rows: @rows, value_key: :click_count %>
+      <%= render "seller/dashboard/metric_panel", title: "Üzerine gelinme", subtitle: "Katalogda kartın üzerinde imleç bekletilme sayısı", rows: @rows, value_key: :hover_count %>
+      <%= render "seller/dashboard/metric_panel", title: "Puan", subtitle: "Ortalama yıldız (0–5)", rows: @rows, value_key: :average_rating, max: 5,
+                 format: rating_format, detail: ->(row) { " (#{row[:rating_count]} değerlendirme)" } %>
+      <%= render "seller/dashboard/metric_panel", title: "Yorum", subtitle: "Ürüne yapılan yorum sayısı", rows: @rows, value_key: :comment_count %>
+    </section>
+
+    <details class="mt-6 border border-stone-200 bg-[var(--paper-hi)]">
+      <summary class="cursor-pointer px-5 py-3 text-sm font-semibold text-[var(--ink)]">Tablo görünümü</summary>
+      <div class="overflow-x-auto border-t border-stone-200">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-stone-50 text-xs text-stone-500">
+            <tr>
+              <th scope="col" class="px-5 py-2 font-medium">Ürün</th>
+              <th scope="col" class="px-3 py-2 text-right font-medium">Tıklanma</th>
+              <th scope="col" class="px-3 py-2 text-right font-medium">Üzerine gelinme</th>
+              <th scope="col" class="px-3 py-2 text-right font-medium">Ort. puan</th>
+              <th scope="col" class="px-3 py-2 text-right font-medium">Değerlendirme</th>
+              <th scope="col" class="px-5 py-2 text-right font-medium">Yorum</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100 tabular-nums">
+            <% @rows.each do |row| %>
+              <tr>
+                <th scope="row" class="px-5 py-2 font-medium text-stone-800"><%= link_to row[:product].name, product_path(row[:product]), class: "hover:underline" %></th>
+                <td class="px-3 py-2 text-right"><%= number_with_delimiter(row[:click_count], delimiter: ".") %></td>
+                <td class="px-3 py-2 text-right"><%= number_with_delimiter(row[:hover_count], delimiter: ".") %></td>
+                <td class="px-3 py-2 text-right"><%= rating_format.call(row[:average_rating]) %></td>
+                <td class="px-3 py-2 text-right"><%= number_with_delimiter(row[:rating_count], delimiter: ".") %></td>
+                <td class="px-5 py-2 text-right"><%= number_with_delimiter(row[:comment_count], delimiter: ".") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  <% end %>
+</main>

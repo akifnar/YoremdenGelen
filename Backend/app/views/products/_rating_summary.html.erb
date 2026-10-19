@@ -1,0 +1,11 @@
+<%# locals: (product:) %>
+<%# Ortalama puan; metadata yalnızca okunur (metrics çağrılmaz, render sırasında kayıt oluşturulmaz).
+    İlk puanlı yorum gelince CommentsController bu bölümü Turbo Stream ile değiştirir. %>
+<% metadata = product.product_metadata %>
+<div id="<%= dom_id(product, :rating) %>" class="mt-2">
+  <% if metadata&.rating_count.to_i.positive? %>
+    <%= render "shared/stars", rating: metadata.average_rating, count: metadata.rating_count %>
+  <% else %>
+    <span class="font-hand text-lg text-[var(--subtle)]">henüz puan verilmemiş</span>
+  <% end %>
+</div>

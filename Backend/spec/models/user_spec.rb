@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
-  it "normalizes email and only allows user and admin roles" do
-    user = described_class.new(name: "Test", email: " TEST@example.com ", role: "user", password: "secret123")
+  it "normalizes email and only allows buyer, seller and admin roles" do
+    user = described_class.new(name: "Test", email: " TEST@example.com ", role: "buyer", password: "secret123")
     expect(user).to be_valid
     expect(user.email).to eq("test@example.com")
     user.role = "owner"
@@ -10,7 +10,7 @@ RSpec.describe User, type: :model do
   end
 
   it "has many products through the seller association" do
-    user = described_class.create!(name: "Seller", email: "seller@example.com", password: "secret123")
+    user = described_class.create!(name: "Seller", email: "seller@example.com", password: "secret123", role: "seller")
     product = Product.create!(
       name: "Local olive oil",
       description: "Made by the user",
@@ -33,8 +33,10 @@ RSpec.describe User, type: :model do
     expect(user).to be_valid
   end
 
-  it "authenticates passwords without storing the plain text password" do
-    user = described_class.create!(name: "Test", email: "test@example.com", password: "secret123")
+  it "hashes passwords with bcrypt and compares hashes on authenticate" do
+    user = described_class.new(name: "Test", email: "test@example.com", password: "secret123")
+    expect(BCrypt::Password.valid_hash?(user.password_digest)).to be(true)
+    expect(BCrypt::Password.new(user.password_digest).is_password?("secret123")).to be(true)
     expect(user.authenticate("secret123")).to eq(user)
     expect(user.authenticate("wrongpass")).to be(false)
     expect(user.password_digest).not_to include("secret123")
@@ -48,11 +50,14 @@ RSpec.describe User, type: :model do
     expect(user.session_token_expires_at).to be_within(1.second).of(12.hours.from_now)
     expect(user.remember_token_expires_at).to be_within(1.second).of(30.days.from_now)
     expect(user.session_token).to eq(described_class.token_digest(issued_tokens.fetch(:session_token)))
-    expect(user.remember_token).to eq(first_remember_token)
+    # DB yalnızca özetleri tutar; ham token'lar (cookie'ye giden) veritabanında yer almaz.
+    expect(user.remember_token).to eq(described_class.token_digest(first_remember_token))
+    expect(user.remember_token).not_to eq(first_remember_token)
+    expect(user.refresh_session!("yanlis-token")).to be(false)
     refreshed_tokens = user.refresh_session!(first_remember_token)
     expect(refreshed_tokens).to be_a(Hash)
-    expect(user.reload.remember_token).to eq(refreshed_tokens.fetch(:remember_token))
-    expect(user.remember_token).not_to eq(first_remember_token)
+    expect(user.reload.remember_token).to eq(described_class.token_digest(refreshed_tokens.fetch(:remember_token)))
+    expect(user.refresh_session!(first_remember_token)).to be(false)
     expect(user.revoke_tokens!).to be(true)
     expect(user.reload.session_token).to be_nil
   end

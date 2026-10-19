@@ -1,0 +1,6 @@
+<%# locals: (user:, size: "h-8 w-8 text-sm") %>
+<% if user.avatar.attached? && user.avatar.blob.persisted? %>
+  <%= image_tag rails_blob_path(user.avatar, only_path: true), alt: "", class: "#{size} shrink-0 rounded-full object-cover" %>
+<% else %>
+  <span aria-hidden="true" class="<%= size %> grid shrink-0 place-items-center rounded-full bg-[var(--amber)] font-semibold text-[var(--ink)]"><%= user.name.to_s.first.to_s.upcase %></span>
+<% end %>

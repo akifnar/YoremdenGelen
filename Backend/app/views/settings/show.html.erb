@@ -1,0 +1,38 @@
+<% content_for :title, "Ayarlar · Yöremden Gelen" %>
+<main class="mx-auto w-full max-w-2xl px-5 py-10 sm:px-8">
+  <p class="text-sm font-medium text-[var(--blue-ink)]">Ayarlar</p>
+  <h1 class="mt-2 text-2xl font-semibold text-[var(--ink)]">Profilin</h1>
+  <p class="mt-2 text-sm text-stone-600"><%= @user.email %> · <%= role_label(@user.role) %></p>
+
+  <%# Ad ve profil resmi header'da da göründüğü için form tam sayfa (_top) gönderilir. %>
+  <%= form_with model: @user, scope: :user, url: settings_path, method: :patch, data: { turbo_frame: "_top" }, class: "mt-6 space-y-5 border border-stone-200 bg-[var(--paper-hi)] p-5 sm:p-7" do |form| %>
+    <%= render "partials/form_errors", record: @user %>
+
+    <%# Alıcı yalnızca adını değiştirir; profil resmi satıcılara özel (SettingsController#settings_params ile aynı kural). %>
+    <% if @user.seller? %>
+      <div class="flex items-center gap-4">
+        <%= render "shared/avatar", user: @user, size: "h-16 w-16 text-xl" %>
+        <%= form.label :avatar, class: "flex-1 text-sm font-medium text-stone-700" do %>
+          Profil resmi <span class="font-normal text-stone-500">(PNG, JPEG veya WebP, en fazla 2 MB)</span>
+          <%= form.file_field :avatar, accept: User::AVATAR_CONTENT_TYPES.join(","), class: "seller-file mt-1 block w-full border border-stone-300 px-3 py-2 text-sm font-normal" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= form.label :name, class: "block text-sm font-medium text-stone-700" do %>
+      Ad soyad
+      <%= form.text_field :name, required: true, maxlength: 120, class: "seller-field mt-1 block w-full border border-stone-300 px-3 py-2.5 font-normal" %>
+    <% end %>
+
+    <div class="border-t border-stone-200 pt-5">
+      <%= form.label :current_password, class: "block text-sm font-medium text-stone-700" do %>
+        Mevcut şifre
+        <span class="block text-xs font-normal text-stone-500">Değişiklikleri kaydetmek için şifreni gir.</span>
+        <%= form.password_field :current_password, required: true, autocomplete: "current-password", value: nil,
+              class: "seller-field mt-1 block w-full border border-stone-300 px-3 py-2.5 font-normal" %>
+      <% end %>
+    </div>
+
+    <%= form.button "Kaydet", type: "submit", data: { turbo_submits_with: "Kaydediliyor…" }, class: button_classes(variant: :primary, size: :lg, extra: "seller-publish") %>
+  <% end %>
+</main>

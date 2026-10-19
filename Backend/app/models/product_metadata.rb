@@ -7,6 +7,10 @@ class ProductMetadata < ApplicationRecord
   validates :click_count, :hover_count, :rating_sum, :rating_count, :comment_count,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  def average_rating
+    rating_count.zero? ? 0.0 : (rating_sum.to_f / rating_count).round(1)
+  end
+
   def record_click!
     increment!(:click_count)
   end
@@ -25,5 +29,9 @@ class ProductMetadata < ApplicationRecord
 
   def record_comment!
     increment!(:comment_count)
+  end
+
+  def record_comment_removed!
+    decrement!(:comment_count)
   end
 end

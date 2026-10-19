@@ -1,0 +1,10 @@
+<%# locals: (message:, error: false) %>
+<section role="<%= error ? "alert" : "status" %>" data-controller="notice" data-action="mouseenter->notice#pause mouseleave->notice#resume"
+         class="cart-notice pointer-events-auto flex w-full items-center gap-3 border bg-[var(--paper-hi)] px-4 py-3 shadow-lg <%= error ? "border-red-200" : "border-[var(--line)]" %>">
+  <span aria-hidden="true" class="grid h-8 w-8 shrink-0 place-items-center <%= error ? "bg-red-50 text-red-700" : "bg-[var(--kraft)] text-[var(--blue-ink)]" %>">
+    <%= error ? "!" : "✓" %>
+  </span>
+  <p class="min-w-0 flex-1 text-sm font-medium leading-5 text-[var(--ink)]"><%= message %></p>
+  <button type="button" aria-label="Bildirimi kapat" data-action="notice#dismiss"
+          class="shrink-0 px-2 py-1 text-lg leading-none text-stone-400 hover:text-stone-700">×</button>
+</section>

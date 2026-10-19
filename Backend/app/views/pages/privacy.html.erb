@@ -1,0 +1,24 @@
+<% content_for :title, "Gizlilik · Yöremden Gelen" %>
+<main class="mx-auto w-full max-w-4xl px-5 py-12 sm:px-8 sm:py-16">
+  <%= render "partials/page_header", eyebrow: "Yasal bilgilendirme", title: "Gizlilik ve kişisel veriler",
+             lead: "Kişisel verilerin nasıl işlendiği ve korunduğu hakkında bilgilendirme." %>
+
+  <%= render "partials/draft_notice" do %>
+    Bu sayfa taslak niteliğindedir. Gerçek veri işleme uygulamaları ve
+    işletme bilgileri belirlenmeden yasal bilgilendirme olarak
+    kullanılmamalıdır.
+  <% end %>
+
+  <div class="mt-8 space-y-5">
+    <%= render "partials/info_section", title: "Hangi bilgiler işlenebilir?" do %>
+      Sipariş veya iletişim özellikleri kullanıma açıldığında, bu işlemler
+      için gerekli bilgiler işlenebilir. Toplanan bilgi türleri, amaçları
+      ve hukuki dayanakları gerçek uygulamaya göre burada açıklanmalıdır.
+    <% end %>
+    <%= render "partials/info_section", title: "Bilgiler nasıl kullanılır?" do %>
+      Bilgilerin kullanım amaçları, saklama süreleri ve varsa hizmet
+      sağlayıcılarla paylaşım koşulları işletmenin gerçek işleyişine göre
+      belirtilmelidir.
+    <% end %>
+  </div>
+</main>

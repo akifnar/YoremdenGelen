@@ -1,0 +1,31 @@
+<%# locals: (pagy:) %>
+<%# Pagy'nin hazır pagy_nav'ı yerine kendi işaretlememiz: Tailwind ile stillenir ve bağlantılar içinde
+    bulunduğu Turbo Frame'i hedefler. pagy.series sayfa numaralarını ve boşlukları verir:
+    [1, :gap, 4, "5", 6, :gap, 12] (String olan eleman mevcut sayfa). pagy_url_for, sayfa bağlantısını
+    Pagy nesnesindeki request_path üzerinden kurar. %>
+<% return if pagy.pages <= 1 %>
+<% base = "inline-grid h-9 min-w-9 place-items-center rounded-[4px] px-2 text-sm tabular-nums transition-colors" %>
+<nav aria-label="Sayfalar" class="mt-6 flex flex-wrap items-center justify-center gap-1">
+  <% if pagy.prev %>
+    <%= link_to "‹", pagy_url_for(pagy, pagy.prev), rel: "prev", aria: { label: "Önceki sayfa" }, class: "#{base} text-[var(--ink-2)] hover:bg-[var(--kraft)]" %>
+  <% else %>
+    <span aria-hidden="true" class="<%= base %> text-[rgba(34,30,23,0.25)]">‹</span>
+  <% end %>
+
+  <% pagy.series.each do |item| %>
+    <% case item %>
+    <% when Integer %>
+      <%= link_to item, pagy_url_for(pagy, item), aria: { label: "#{item}. sayfa" }, class: "#{base} text-[var(--ink-2)] hover:bg-[var(--kraft)]" %>
+    <% when String %>
+      <span aria-current="page" class="<%= base %> btn-blue font-semibold"><%= item %></span>
+    <% when :gap %>
+      <span aria-hidden="true" class="<%= base %> text-[var(--subtle)]">…</span>
+    <% end %>
+  <% end %>
+
+  <% if pagy.next %>
+    <%= link_to "›", pagy_url_for(pagy, pagy.next), rel: "next", aria: { label: "Sonraki sayfa" }, class: "#{base} text-[var(--ink-2)] hover:bg-[var(--kraft)]" %>
+  <% else %>
+    <span aria-hidden="true" class="<%= base %> text-[rgba(34,30,23,0.25)]">›</span>
+  <% end %>
+</nav>

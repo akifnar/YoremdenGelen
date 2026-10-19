@@ -1,62 +1,3 @@
-require "faker"
-
-Faker::Config.locale = :en
-
-regional_dishes = [
-  [ "Kayseri Mantısı", "İç Anadolu", "El açması hamurun içinde baharatlı kıyma; sarımsaklı yoğurt ve tereyağlı sosla servis edilir." ],
-  [ "İzmir Boyozu", "Ege", "Kat kat hamurdan hazırlanan, fırından yeni çıkmış geleneksel İzmir lezzeti." ],
-  [ "Gaziantep Baklavası", "Güneydoğu Anadolu", "İnce yufkalar, Antep fıstığı ve şerbetle hazırlanan geleneksel tatlı." ],
-  [ "Adana İçli Köfte", "Akdeniz", "Dışı ince bulgurlu, içi baharatlı kıymalı geleneksel içli köfte." ],
-  [ "Trabzon Kuymak", "Karadeniz", "Mısır unu, tereyağı ve uzayan yöresel peynirle hazırlanan sıcak lezzet." ],
-  [ "Hatay Künefesi", "Akdeniz", "Tel kadayıf ve yöresel peynirle hazırlanan, şerbeti dengeli künefe." ],
-  [ "Erzurum Cağ Kebabı", "Doğu Anadolu", "Yatay şişte odun ateşinde pişirilen, ince dilimlenerek sunulan kebap." ],
-  [ "Bursa İskender Kebabı", "Marmara", "Pideli döner, domates sosu ve yoğurtla hazırlanan Bursa klasiği." ],
-  [ "Nevşehir Testi Kebabı", "İç Anadolu", "Testide ağır ağır pişirilen et ve sebzelerle hazırlanan yöresel kebap." ],
-  [ "Antakya Tepsi Kebabı", "Akdeniz", "Zırh kıyması, biber ve yöresel baharatlarla tepside pişirilir." ],
-  [ "Konya Etli Ekmek", "İç Anadolu", "İnce hamur üzerine yayılan kıymalı harçla taş fırında pişirilir." ],
-  [ "Mardin Kaburga Dolması", "Güneydoğu Anadolu", "Baharatlı iç pilavla doldurulup uzun süre pişirilen geleneksel kuzu kaburga." ],
-  [ "Sivas Köftesi", "İç Anadolu", "Dana etinin yöresel yöntemle yoğrulup ızgarada pişirilmesiyle hazırlanır." ],
-  [ "Rize Hamsili Pilav", "Karadeniz", "Karadeniz hamsisi ve baharatlı pilavla hazırlanan yöresel yemek." ],
-  [ "Şanlıurfa Lahmacunu", "Güneydoğu Anadolu", "İnce hamur üzerinde isotlu ve yöresel baharatlı kıymalı harç." ],
-  [ "Tekirdağ Köftesi", "Marmara", "Özel baharat karışımıyla hazırlanan, ızgarada pişmiş yöresel köfte." ],
-  [ "Afyon Kaymağı", "Ege", "Afyonkarahisar'ın geleneksel yöntemlerle hazırlanan yoğun kıvamlı manda kaymağı." ],
-  [ "Malatya Kayısılı Tatlı", "Doğu Anadolu", "Gün kurusu kayısı ve yöresel ürünlerle hazırlanan hafif tatlı." ],
-  [ "Edirne Ciğer Tava", "Marmara", "İnce dilimlenmiş ciğerin kızgın yağda çıtır pişirilmesiyle hazırlanır." ],
-  [ "Kars Hangel", "Doğu Anadolu", "El açması hamur, sarımsaklı yoğurt ve tereyağlı sosla servis edilir." ],
-  [ "Aydın Çöp Şiş", "Ege", "Küçük et parçalarının şişte köz ateşinde pişirilmesiyle hazırlanır." ],
-  [ "Mersin Tantunisi", "Akdeniz", "Sacda kavrulan ince et, lavaş ve yöresel baharatlarla sunulur." ],
-  [ "Bolu Mengen Pilavı", "Karadeniz", "Pirinç, mantar ve yöresel malzemelerle hazırlanan Mengen usulü pilav." ],
-  [ "Diyarbakır Burma Kadayıfı", "Güneydoğu Anadolu", "İnce tel kadayıf ve cevizle hazırlanan, şerbetle buluşan tatlı." ],
-  [ "Kahramanmaraş Dondurması", "Akdeniz", "Salep ve keçi sütüyle geleneksel yöntemle hazırlanan Maraş dondurması." ],
-  [ "Çorum Leblebisi", "Karadeniz", "Çorum'un geleneksel kavurma yöntemiyle hazırlanan nohut leblebisi." ],
-  [ "Kütahya Cimcik Aşı", "Ege", "Küçük hamur parçaları, yoğurt ve tereyağlı sosla hazırlanan yöresel yemek." ],
-  [ "Manisa Mesir Macunu", "Ege", "Çeşitli baharatlarla hazırlanan geleneksel Manisa macunu." ],
-  [ "Ordu Pidesi", "Karadeniz", "Yöresel peynir ve tereyağıyla taş fırında pişirilen açık pide." ],
-  [ "Balıkesir Höşmerim", "Marmara", "Yöresel peynir, irmik ve şekerle hazırlanan geleneksel tatlı." ]
-]
-
-regional_dishes.each_with_index do |(name, _region, description), index|
-  category = case name
-  when /peynir|kuymak|kaymak|yoğurt/i then "Peynir"
-  when /zeytin|zeytinyağı/i then "Zeytin"
-  when /baklava|künefe|tatlı|kadayıf|dondurma|kayısı|höşmerim|macunu/i then "Tatlılar"
-  when /boyoz|mantı|ekmek|pide|hamsili pilav|hamgel|cimcik|pilav|lahmacun/i then "Hamur İşleri"
-  else "Et ve Şarküteri"
-  end
-  sku = "YGG-LOCAL-%03d" % (index + 1)
-  product = Product.find_by(sku: sku) || Product.where(sku: nil).order(:id).first || Product.new
-  product.sku = sku
-  product.assign_attributes(
-    name: name,
-    category: category,
-    description: description,
-    price: Faker::Commerce.price(range: 45.0..650.0, as_string: false),
-    stock: Faker::Number.between(from: 8, to: 120),
-    is_active: true
-  )
-  product.save!
-end
-
 if Rails.env.production?
   %w[INITIAL_USER_EMAIL INITIAL_USER_PASSWORD INITIAL_ADMIN_EMAIL INITIAL_ADMIN_PASSWORD].each do |key|
     raise "Set #{key} before seeding production accounts" if ENV[key].blank?
@@ -70,7 +11,7 @@ initial_accounts = [
     password: ENV["INITIAL_USER_PASSWORD"],
     development_password: "user12345",
     legacy_email: "user@yoremden-gelen.local",
-    role: "user"
+    role: "buyer"
   },
   {
     name: "Initial Admin",
@@ -100,10 +41,122 @@ initial_accounts.each do |attributes|
   user.name = attributes[:name]
   user.role = attributes[:role]
   legacy_password = attributes[:role] == "admin" ? "admin" : "user"
-  if is_new_or_migrated_account || (!Rails.env.production? && user.authenticate(legacy_password))
+  # Eski (bcrypt öncesi PBKDF2) özetler BCrypt tarafından okunamaz; geliştirmede yeniden belirlenir.
+  legacy_digest = begin
+    user.password_digest.present? && user.authenticate(legacy_password).present?
+  rescue BCrypt::Errors::InvalidHash
+    true
+  end
+  if is_new_or_migrated_account || (!Rails.env.production? && legacy_digest)
     user.allow_seed_password = !Rails.env.production? && password.length < 8
     user.password = password
   end
   user.email_verified_at ||= Time.current
   user.save!
+end
+
+# Geliştirme/demo verisi (Faker): 10 satıcı × 10 ürün ve 50 alıcı. Tüm demo hesaplarının şifresi "password123".
+# Üretimde çalışmaz; Faker yalnızca development/test grubunda yüklüdür.
+unless Rails.env.production?
+  require "faker"
+
+  Faker::Config.locale = :tr
+  Faker::Config.random = Random.new(42) # Her seed aynı veriyi üretir.
+  demo_password = "password123"
+
+  regions = %w[Ezine Bergama Ayvalık Gemlik Kars Erzurum Afyon Kayseri Tokat Malatya Gaziantep Hatay Rize Trabzon
+               Bolu Safranbolu Kastamonu Konya Antakya Mardin Edremit Bayramiç Tire Ödemiş Çorum Amasya]
+  items_by_category = {
+    "Peynir" => [ "Tulum Peyniri", "Kaşar Peyniri", "Örgü Peyniri", "Çökelek", "Lor Peyniri", "Keçi Peyniri" ],
+    "Zeytin" => [ "Siyah Zeytin", "Yeşil Zeytin", "Kırma Zeytin", "Çizik Zeytin" ],
+    "Zeytinyağı" => [ "Erken Hasat Zeytinyağı", "Sızma Zeytinyağı", "Taş Baskı Zeytinyağı" ],
+    "Et ve Şarküteri" => [ "Kangal Sucuk", "Pastırma", "Kavurma", "Kuru Et" ],
+    "Tatlılar" => [ "Lokum", "Pestil", "Cevizli Sucuk", "Tahin Helvası", "Kuru Kayısı Tatlısı" ],
+    "Hamur İşleri" => [ "Erişte", "Tarhana", "Yufka", "Kuru Mantı", "Bazlama" ],
+    "Süt Ürünleri" => [ "Köy Tereyağı", "Süzme Yoğurt", "Manda Kaymağı" ],
+    "Diğer Yöresel Ürünler" => [ "Dut Pekmezi", "Çiçek Balı", "Kestane Balı", "Gün Kurusu Kayısı", "Nar Ekşisi" ]
+  }
+  product_pool = regions.product(items_by_category.to_a).map { |region, (category, items)| [ region, category, items ] }
+                        .flat_map { |region, category, items| items.map { |item| [ "#{region} #{item}", category, region, item ] } }
+                        .shuffle(random: Faker::Config.random)
+
+  10.times do |index|
+    seller = User.find_or_initialize_by(email: "satici#{index + 1}@yoremdengelen.test")
+    seller.assign_attributes(
+      name: Faker::Name.name,
+      role: "seller",
+      email_verified_at: Time.current
+    )
+    seller.password = demo_password if seller.new_record?
+    seller.save!
+
+    product_pool.shift(10).each do |name, category, region, item|
+      product = Product.find_or_initialize_by(name: name)
+      product.assign_attributes(
+        seller: seller,
+        category: category,
+        description: "#{region} yöresinden, #{seller.name} tarafından hazırlanan #{item.downcase(:turkic)}. #{Faker::Lorem.sentence(word_count: 8)}",
+        price: Faker::Commerce.price(range: 45.0..650.0, as_string: false),
+        stock: Faker::Number.between(from: 0, to: 120),
+        is_active: true
+      )
+      product.save!
+
+      # Puan ve yorum sayıları aşağıdaki gerçek siparişlerden ve yorumlardan gelir; burada yalnızca ziyaret metrikleri.
+      product.metrics.update!(
+        click_count: Faker::Number.between(from: 0, to: 800),
+        hover_count: Faker::Number.between(from: 0, to: 3_000)
+      )
+    end
+  end
+
+  50.times do |index|
+    buyer = User.find_or_initialize_by(email: "alici#{index + 1}@yoremdengelen.test")
+    buyer.assign_attributes(name: Faker::Name.name, role: "buyer", email_verified_at: Time.current)
+    buyer.password = demo_password if buyer.new_record?
+    buyer.save!
+  end
+
+  # Örnek siparişler ve yorumlar (yalnızca boş veritabanında): ilk 20 alıcı gerçek sepet → sipariş akışıyla
+  # (Checkout) 3'er ürün alır ve her ürüne ilk yorumunu puanla yazar; satıcılar bazı yorumlara cevap verir,
+  # diğer alıcılar like/dislike bırakır. Böylece puan, yorum ve tepki sayıları gerçek kayıtlardan oluşur.
+  if Order.none?
+    comment_texts = [
+      "Tam anlatıldığı gibi, çok taze geldi.", "Ailece bayıldık, tekrar sipariş vereceğim.",
+      "Paketleme özenliydi, lezzeti yerinde.", "Fiyatına göre gayet iyi.", "Beklediğimden biraz farklıydı ama güzeldi.",
+      "Köydeki tadı aynen, teşekkürler!", "Hızlı geldi, kalitesi yüksek."
+    ]
+    reply_texts = [ "Güzel yorumunuz için teşekkür ederiz!", "Afiyet olsun, yine bekleriz.", "Geri bildiriminiz bizim için çok değerli." ]
+    random = Faker::Config.random
+    buyers = User.where(role: "buyer").where("email LIKE ?", "alici%@yoremdengelen.test").order(:id).first(20)
+
+    buyers.each do |buyer|
+      cart = Cart.for(buyer)
+      Product.available.order(:id).to_a.sample(3, random: random).each do |product|
+        cart.cart_items.create!(product: product, quantity: 1)
+      end
+      next if cart.cart_items.empty?
+
+      Checkout.new(cart).place!.order_items.includes(:product).each do |item|
+        purchase = buyer.purchase_of(item.product)
+        Comment.transaction do
+          item.product.comments.create!(user: buyer, body: comment_texts.sample(random: random))
+          purchase.rate!(random.rand(3..5)) unless purchase.rated?
+        end
+      end
+    end
+
+    Comment.top_level.includes(product: :seller).find_each do |comment|
+      seller = comment.product.seller
+      comment.create_reply!(product: comment.product, user: seller, body: reply_texts.sample(random: random)) if seller && random.rand < 0.4
+      buyers.sample(3, random: random).each do |buyer|
+        next if buyer.id == comment.user_id
+
+        CommentReaction.toggle!(comment: comment, user: buyer, kind: random.rand < 0.8 ? "like" : "dislike")
+      end
+    end
+  end
+
+  puts "Seed tamam: #{User.where(role: "seller").count} satıcı, #{User.where(role: "buyer").count} alıcı, #{Product.count} ürün, " \
+       "#{Order.count} sipariş, #{Comment.top_level.count} yorum, #{Comment.where.not(parent_id: nil).count} satıcı cevabı. Demo şifresi: #{demo_password}"
 end

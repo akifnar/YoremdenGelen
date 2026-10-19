@@ -1,0 +1,21 @@
+<% content_for :title, "E-posta doğrulama · Yöremden Gelen" %>
+<main class="mx-auto max-w-xl px-5 py-16">
+  <h1 class="text-2xl font-semibold">E-posta doğrulama</h1>
+
+  <% if @message %>
+    <%= render "email_verifications/result", message: @message, success: @success %>
+  <% elsif @token.present? %>
+    <div id="verification_result">
+      <%# GET bağlantısı durumu değiştirmez; form sayfa açılınca kendiliğinden POST edilir. JS yoksa buton görünür. %>
+      <%= form_with url: verify_email_path, data: { controller: "auto-submit", auto_submit_immediate_value: true } do |form| %>
+        <%= form.hidden_field :token, value: @token %>
+        <p role="status" class="mt-4">E-posta doğrulanıyor…</p>
+        <noscript>
+          <%= form.button "E-postamı doğrula", type: "submit", class: button_classes(variant: :primary, size: :md, extra: "mt-4") %>
+        </noscript>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "email_verifications/result", message: "Doğrulama bağlantısı geçersiz.", success: false %>
+  <% end %>
+</main>

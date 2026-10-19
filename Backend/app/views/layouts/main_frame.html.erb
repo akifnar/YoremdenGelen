@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <%= render "partials/head" %>
+  </head>
+
+  <body>
+    <%# Turbo-Frame: main isteklerinin layout'u (layout seçimi ApplicationController'da). Header ve footer
+        tarayıcıda zaten duruyor; yalnızca değişen içerik gönderilir. %>
+    <%= turbo_frame_tag "main" do %>
+      <%# Bildirimler frame dışındaki #notifications alanına Turbo Stream olarak eklenir. %>
+      <% if notice.present? %>
+        <%= turbo_stream.append "notifications", partial: "shared/notice", locals: { message: notice, error: false } %>
+      <% end %>
+      <% if alert.present? %>
+        <%= turbo_stream.append "notifications", partial: "shared/notice", locals: { message: alert, error: true } %>
+      <% end %>
+      <%= yield %>
+    <% end %>
+  </body>
+</html>
