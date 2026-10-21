@@ -1,0 +1,19 @@
+<%# locals: (comment:, my_reaction:, can_react:) %>
+<%# can_react: oturumdaki alıcı bu ürünü satın almış mı (purchase satırı; listede bir kez hesaplanır).
+    Like/dislike yalnızca ürünü satın almış alıcılardan ve başkasının yorumuna; diğerleri yalnızca sayıları görür. %>
+<% can_react &&= current_user && comment.user_id != current_user.id %>
+<div id="<%= dom_id(comment, :reactions) %>" class="mt-3 flex items-center gap-2 text-sm">
+  <% [ [ "like", "👍", comment.likes_count, "Beğen" ], [ "dislike", "👎", comment.dislikes_count, "Beğenme" ] ].each do |kind, icon, count, label| %>
+    <% active = my_reaction == kind %>
+    <% if can_react %>
+      <%= button_to comment_reaction_path(comment), params: { kind: kind }, aria: { pressed: active, label: "#{label} (#{count})" },
+            class: "inline-flex items-center gap-1.5 rounded-[3px] border px-2.5 py-1 tabular-nums transition-colors #{active ? "border-[var(--blue)] bg-[var(--blue)]/10 text-[var(--blue-ink)]" : "border-[var(--line)] text-[var(--ink-2)] hover:bg-[var(--kraft)]"}" do %>
+        <span aria-hidden="true"><%= icon %></span><%= count %>
+      <% end %>
+    <% else %>
+      <span class="inline-flex items-center gap-1.5 px-1 tabular-nums text-[var(--subtle)]" aria-label="<%= label %>: <%= count %>">
+        <span aria-hidden="true"><%= icon %></span><%= count %>
+      </span>
+    <% end %>
+  <% end %>
+</div>
