@@ -1,0 +1,24 @@
+<%# locals: (user:) %>
+<section id="admin_new_user_form" class="mt-6 border border-stone-200 bg-[var(--paper-hi)] p-5">
+  <h2 class="font-semibold text-[var(--ink)]">Yeni kullanıcı ekle</h2>
+  <%= form_with model: user, scope: :user, url: admin_users_path, class: "mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_10rem_auto] lg:items-end" do |form| %>
+    <%= render "partials/form_errors", record: user, extra_class: "sm:col-span-2 lg:col-span-5" %>
+    <%= form.label :name, class: "text-sm text-stone-700" do %>
+      Ad soyad
+      <%= form.text_field :name, required: true, maxlength: 120, class: "mt-1 block w-full border border-stone-300 px-3 py-2" %>
+    <% end %>
+    <%= form.label :email, class: "text-sm text-stone-700" do %>
+      E-posta
+      <%= form.email_field :email, required: true, class: "mt-1 block w-full border border-stone-300 px-3 py-2" %>
+    <% end %>
+    <%= form.label :password, class: "text-sm text-stone-700" do %>
+      Geçici şifre
+      <%= form.password_field :password, required: true, minlength: 8, autocomplete: "new-password", class: "mt-1 block w-full border border-stone-300 px-3 py-2" %>
+    <% end %>
+    <%= form.label :role, class: "text-sm text-stone-700" do %>
+      Rol
+      <%= form.select :role, User::ROLES.map { |role| [ role_label(role), role ] }, {}, class: "mt-1 block w-full border border-stone-300 bg-[var(--paper-hi)] px-3 py-2" %>
+    <% end %>
+    <%= form.button "Ekle", type: "submit", data: { turbo_submits_with: "Ekleniyor…" }, class: button_classes(variant: :primary, size: :md) %>
+  <% end %>
+</section>

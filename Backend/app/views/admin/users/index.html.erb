@@ -1,0 +1,11 @@
+<% content_for :title, "Kullanıcı yönetimi · Yöremden Gelen" %>
+<main class="mx-auto w-full max-w-5xl px-5 py-10">
+  <h1 class="text-2xl font-extrabold tracking-tight">Kullanıcı yönetimi</h1>
+  <p class="mt-2 text-sm text-stone-600">Yeni kayıtlar alıcı olarak açılır. Bir kullanıcının ürün paylaşabilmesi için rolünü satıcı yapın.</p>
+
+  <%= render "admin/users/form", user: @new_user %>
+
+  <div id="admin_users" class="mt-6 divide-y divide-stone-200 border-y border-stone-200">
+    <%= render partial: "admin/users/user", collection: @users, as: :user %>
+  </div>
+</main>
