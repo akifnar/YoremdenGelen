@@ -1,0 +1,17 @@
+<%# locals: (category:, count:, products:) %>
+<%# Anasayfadaki kategori bölümü: en popüler ürünler tek sıra halinde, sayfalama yok; devamı kategori sayfasında. %>
+<% slug = Product.category_slug(category) %>
+<section aria-labelledby="category_<%= slug %>_heading" class="scroll-mt-24">
+  <div class="flex items-baseline justify-between gap-4">
+    <h2 id="category_<%= slug %>_heading" class="font-display text-2xl font-extrabold tracking-tight text-[var(--ink)]">
+      <%= link_to category, category_path(slug), data: { turbo_frame: "main" }, class: "marker px-0.5 hover:text-[var(--blue-ink)]" %>
+    </h2>
+    <p class="text-sm text-[var(--subtle)] tabular-nums">
+      <%= count %> ürün
+      <%= link_to "Tümünü gör →", category_path(slug), data: { turbo_frame: "main" }, class: "ml-3 font-medium text-[var(--blue-ink)] hover:underline" %>
+    </p>
+  </div>
+  <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+    <%= render partial: "products/card", collection: products, as: :product %>
+  </div>
+</section>

@@ -1,0 +1,19 @@
+<%# Product#broadcast_catalog_changes ürün güncellenince kartı bu kanal üzerinden değiştirir. %>
+<%= turbo_stream_from :products %>
+
+<main class="mx-auto w-full max-w-6xl px-8 py-10">
+  <header class="max-w-2xl">
+    <h1 class="font-display text-4xl font-extrabold tracking-tight text-[var(--ink)]">Yöresel ürünler</h1>
+    <p class="mt-2 text-base text-[var(--ink-2)]">Üreticilerden doğrudan; her kategoride en çok ilgi görenler önce.</p>
+  </header>
+
+  <% if @category_sections.empty? %>
+    <p class="mt-10 rounded-[3px] border border-dashed border-[rgba(34,30,23,0.32)] p-6 text-sm text-[var(--ink-2)]">Şu anda satışta ürün bulunmuyor.</p>
+  <% else %>
+    <div class="mt-10 space-y-14">
+      <% @category_sections.each do |category, count, products| %>
+        <%= render "categories/section", category: category, count: count, products: products %>
+      <% end %>
+    </div>
+  <% end %>
+</main>
