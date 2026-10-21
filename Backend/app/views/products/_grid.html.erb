@@ -1,0 +1,7 @@
+<%# locals: (products:, pagy:) %>
+<%# Kategori ve satıcı sayfalarının ürün ızgarası. Sayfa bağlantıları main frame'i içinde kaldığı için yalnızca
+    içerik değişir; frame'in turbo-action="advance" ayarı adres çubuğunu ?page=N ile günceller. %>
+<div class="mt-6 grid grid-cols-3 gap-x-5 gap-y-10">
+  <%= render partial: "products/card", collection: products, as: :product %>
+</div>
+<%= render "shared/pagination", pagy: pagy %>
