@@ -1,0 +1,11 @@
+<%# locals: (cart:, items:, pending_quantity: 0, pending_subtotal: 0) %>
+<%# CartItemsController#create rozeti beklenen adetle hemen günceller; AddCartItemJob bitince gerçek değerle yeniden yayınlar. %>
+<% item_count = cart.item_count(items) + pending_quantity %>
+<% subtotal = cart.subtotal(items) + pending_subtotal %>
+<%= link_to cart_path, id: "cart_badge", data: { turbo_frame: "main" },
+      aria: { label: "Sepet, #{item_count} ürün, #{format_price(subtotal)}" },
+      class: "ml-1 inline-flex shrink-0 rotate-[1deg] items-center gap-2 rounded-[3px] bg-[var(--paper)] px-3 py-1.5 text-sm font-semibold text-[var(--ink)] shadow-[0_2px_3px_rgba(0,0,0,0.35)] transition-transform hover:rotate-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] #{"cart-header-pulse" if pending_quantity.positive?}" do %>
+  <%= cart_icon(css_class: "h-4 w-4 shrink-0 text-[var(--ink-2)]") %>
+  <span class="tabular-nums"><%= item_count %></span>
+  <span class="tabular-nums text-[var(--subtle)]">· <%= format_price(subtotal) %></span>
+<% end %>
