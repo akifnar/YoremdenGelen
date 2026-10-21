@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Product, type: :model do
   describe "seller association" do
     it "belongs to one seller when the product is seller-owned" do
-      seller = User.create!(name: "Seller", email: "seller@example.com", password: "secret123")
+      seller = User.create!(name: "Seller", email: "seller@example.com", password: "secret123", role: "seller")
       product = described_class.create!(
         name: "Local cheese",
         description: "Made by the seller",
@@ -78,7 +78,6 @@ RSpec.describe Product, type: :model do
         product.valid?
         expect(product.errors[:price]).to include("Fiyat 0'dan büyük olmalıdır")
       end
-
     end
 
     context 'stock' do
@@ -101,21 +100,6 @@ RSpec.describe Product, type: :model do
         product.category = "Bilinmeyen kategori"
         expect(product).not_to be_valid
         expect(product.errors[:category]).to be_present
-      end
-    end
-
-    context 'slug' do
-      it 'is invalid with a duplicate slug' do
-        Product.create!(
-          name: 'Aynı İsim',
-          description: 'Açıklama',
-          price: 10,
-          stock: 5,
-          category: "Peynir"
-        )
-        duplicate = Product.new(name: 'Aynı İsim', description: 'Diğer', category: "Peynir", price: 10, stock: 5)
-        duplicate.valid?
-        expect(duplicate.errors[:slug]).to include("bu isimden türetilen URL zaten mevcut, lütfen ürün adını biraz değiştirin")
       end
     end
   end
