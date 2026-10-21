@@ -1,0 +1,26 @@
+<% content_for :title, "Kullanım koşulları · Yöremden Gelen" %>
+<main class="mx-auto w-full max-w-4xl px-5 py-12 sm:px-8 sm:py-16">
+  <%= render "partials/page_header", eyebrow: "Yasal bilgilendirme", title: "Kullanım koşulları",
+             lead: "Yöremden Gelen web sitesinin kullanımına ilişkin genel bilgiler." %>
+
+  <%= render "partials/draft_notice" do %>
+    Bu sayfa örnek taslaktır; gerçek satıcı ve satış koşulları belirlenmeden
+    yürürlükteki kullanım koşulları olarak değerlendirilmemelidir.
+  <% end %>
+
+  <div class="mt-8 space-y-5">
+    <%= render "partials/info_section", title: "Site kullanımı" do %>
+      Kullanıcıların siteyi yürürlükteki mevzuata uygun ve başkalarının
+      haklarına zarar vermeyecek şekilde kullanması beklenir.
+    <% end %>
+    <%= render "partials/info_section", title: "Ürün ve sipariş bilgileri" do %>
+      Ürün açıklamaları, fiyatlandırma, siparişin kurulması, ödeme,
+      teslimat ve iptal koşulları gerçek satış modeline göre burada
+      açıklanmalıdır.
+    <% end %>
+    <%= render "partials/info_section", title: "İşletme bilgileri" do %>
+      Satıcı unvanı, adresi ve iletişim bilgileri: [gerçek işletme
+      bilgileri buraya eklenmelidir].
+    <% end %>
+  </div>
+</main>

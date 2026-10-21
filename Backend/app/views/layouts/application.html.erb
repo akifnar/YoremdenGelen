@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <%= render "partials/head" %>
+  </head>
+
+  <body class="board flex min-h-screen flex-col text-[var(--ink)] antialiased">
+    <%# Sepet rozeti, sepet sayfası ve hata bildirimleri bu sepetin Turbo Stream kanalından güncellenir. %>
+    <%= turbo_stream_from current_cart if current_cart %>
+
+    <%= render "shared/header" %>
+
+    <div id="notifications" aria-live="polite" aria-relevant="additions removals"
+         class="pointer-events-none fixed inset-x-3 top-3 z-[70] flex flex-col items-end gap-2 sm:left-auto sm:right-5 sm:top-5 sm:w-[min(26rem,calc(100vw-2.5rem))]">
+      <% if notice.present? %>
+        <%= render "shared/notice", message: notice, error: false %>
+      <% end %>
+      <% if alert.present? %>
+        <%= render "shared/notice", message: alert, error: true %>
+      <% end %>
+    </div>
+
+    <%# İçerik, panoya bantla tutturulmuş büyük bir kâğıt sayfa üzerinde durur; sayfa geçişleri bu kâğıdın içindeki
+        main frame'i üzerinden yapılır (layouts/main_frame), header ve footer yerinde kalır. advance, adres
+        çubuğunu ve geçmişi normal geçişteki gibi günceller. %>
+    <div class="mx-auto w-full max-w-6xl flex-1 px-6 pb-12 pt-10">
+      <div class="paper rounded-[3px_4px_3px_5px]">
+        <span class="tape" aria-hidden="true"></span>
+        <%= turbo_frame_tag "main", class: "relative z-[1] block", data: { turbo_action: "advance" } do %>
+          <%= yield %>
+        <% end %>
+      </div>
+    </div>
+
+    <%= render "shared/footer" %>
+  </body>
+</html>

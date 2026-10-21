@@ -1,0 +1,28 @@
+<% content_for :title, "Hakkımızda · Yöremden Gelen" %>
+<main class="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+  <section class="relative overflow-hidden rounded-[2rem] board px-7 py-10 text-white shadow-xl shadow-black/30 sm:px-12 sm:py-14">
+    <div class="absolute -bottom-24 -right-10 h-64 w-64 rounded-full bg-[var(--amber)]/15 blur-3xl" />
+    <div class="relative max-w-3xl">
+      <p class="font-semibold text-[var(--amber)]">Hakkımızda</p>
+      <h1 class="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+        Güzel şeyler, güzel insanlardan.
+      </h1>
+      <p class="mt-5 max-w-2xl text-lg leading-8 text-[var(--on-board)]">
+        Yöremden Gelen, yerel üreticilerin özenle hazırladığı ürünleri bir
+        araya getirmek için yola çıktı. Her ürünün arkasındaki emeği ve
+        hikâyeyi daha görünür kılmayı önemsiyoruz.
+      </p>
+    </div>
+  </section>
+
+  <section class="mt-8 grid gap-5 md:grid-cols-2">
+    <%= render "partials/feature_card", icon: "🌿", title: "Neye inanıyoruz?" do %>
+      Alışverişin yalnızca bir ürün seçmek değil, onu üreten insanlarla
+      bağ kurmak olduğuna inanıyoruz.
+    <% end %>
+    <%= render "partials/feature_card", icon: "🤝", title: "Amacımız", tone: :lime do %>
+      Üretenlerle keşfetmek isteyenleri aynı yerde buluşturup yerel
+      üretime alan açmak.
+    <% end %>
+  </section>
+</main>

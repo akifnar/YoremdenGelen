@@ -1,0 +1,7 @@
+<%# locals: (icon:, title:, tone: :emerald, tag: :article) %>
+<%# Emoji simgeli tanıtım kartı (hakkımızda, teslimat-iade); açıklama metni blok olarak verilir. %>
+<%= content_tag tag, class: "rounded-3xl border border-[var(--line)] bg-[var(--paper-hi)] p-7 shadow-sm" do %>
+  <span class="grid h-12 w-12 place-items-center rounded-2xl <%= tone == :lime ? "bg-[var(--amber)]/15" : "bg-[var(--kraft)]" %> text-2xl" aria-hidden="true"><%= icon %></span>
+  <h2 class="mt-5 text-xl font-semibold text-[var(--ink)]"><%= title %></h2>
+  <p class="mt-3 leading-7 text-stone-600"><%= yield %></p>
+<% end %>
