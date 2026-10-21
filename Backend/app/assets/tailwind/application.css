@@ -1,4 +1,7 @@
-@import "tailwindcss";
+/* source(none): otomatik proje taraması kapalı; yalnızca aşağıdaki @source klasörleri taranır.
+   Açık olduğunda container'da .gitignore bulunmadığı için log/ ve tmp/ de taranıyor, her istekte
+   log'a yazılan satır yeniden derlemeyi tetikliyordu. */
+@import "tailwindcss" source(none);
 
 @source "../../views";
 @source "../../helpers";
