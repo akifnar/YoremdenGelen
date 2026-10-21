@@ -6,3 +6,19 @@
 /Backend/tmp/cache/
 /Backend/tmp/pids/
 /Backend/tmp/storage/
+
+# Yerel geliştirme araçları ve index'ler (commit'lenmez)
+/.claude/
+/.codegraph/
+/.gemini/
+/GEMINI.md
+/.mcp.json
+/.vscode/
+
+# Dev'de yüklenen Active Storage dosyaları
+/Backend/storage/*
+!/Backend/storage/.keep
+
+# Tailwind derleme çıktısı (dev'de css servisi, üretimde assets:precompile üretir)
+/Backend/app/assets/builds/*
+!/Backend/app/assets/builds/.keep
