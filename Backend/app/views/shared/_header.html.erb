@@ -1,5 +1,5 @@
-<%# Header lacivert panonun üzerinde: bağlantılar krem renkte (board-link), menüler bantlı kâğıt notu olarak açılır. %>
-<% link_classes = "board-link inline-flex items-center gap-2 rounded-[4px] px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]" %>
+<%# Header ceviz rengi panonun üzerinde: bağlantılar krem renkte (board-link), menüler bantlı kâğıt notu olarak açılır. %>
+<% link_classes = "board-link inline-flex items-center gap-2 rounded-[4px] px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--amber)]" %>
 <%# Sayfa bağlantıları yalnızca main frame'ini değiştirir; Çıkış header'ı değiştirdiği için tam sayfa geçişidir. %>
 <% main = { turbo_frame: "main" } %>
 <%# Açılır menüler dropdown_controller ile açılıp kapanır (wrapper'da data-open). Panel düğmenin altından aşağı doğru
@@ -13,7 +13,7 @@
 <header class="board sticky top-0 z-50 border-b border-[var(--board-line)]">
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-8 py-3">
     <div class="flex items-center gap-4">
-      <%= link_to root_path, data: main, class: "inline-flex shrink-0 items-center gap-2.5 rounded-[4px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)]" do %>
+      <%= link_to root_path, data: main, class: "inline-flex shrink-0 items-center gap-2.5 rounded-[4px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--amber)]" do %>
         <span class="grid h-8 w-8 rotate-[-4deg] place-items-center rounded-[3px] bg-[var(--paper)] font-display text-base font-extrabold text-[var(--ink)] shadow-[0_2px_3px_rgba(0,0,0,0.35)]">Y</span>
         <span class="font-display text-xl font-extrabold tracking-tight text-[var(--on-board-strong)]">
           <span class="marker px-0.5">Yöremden</span> Gelen

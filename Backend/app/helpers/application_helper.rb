@@ -3,13 +3,13 @@ module ApplicationHelper
   include Pagy::Frontend
 
   BUTTON_BASE_CLASSES = "inline-flex items-center justify-center gap-2 rounded-[4px] border font-semibold transition-colors duration-200 " \
-                        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] " \
+                        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] " \
                         "disabled:cursor-not-allowed disabled:opacity-50".freeze
 
   BUTTON_VARIANT_CLASSES = {
-    # primary/accent: temanın mavi eylem düğmesi (.btn-blue: basılı his + parlama efekti).
-    primary: "btn-blue border-transparent",
-    accent: "btn-blue border-transparent",
+    # primary/accent: temanın zeytin yeşili eylem düğmesi (.btn-accent: basılı his + parlama efekti).
+    primary: "btn-accent border-transparent",
+    accent: "btn-accent border-transparent",
     secondary: "border-[var(--line)] bg-[var(--paper-hi)] text-[var(--ink-2)] hover:border-[rgba(34,30,23,0.32)] hover:bg-[var(--kraft)] hover:text-[var(--ink)]",
     danger: "border-[#a94438] bg-[var(--paper-hi)] text-[#a94438] hover:bg-[#a94438] hover:text-[var(--paper-hi)]",
     quiet: "border-transparent bg-transparent text-[var(--ink-2)] hover:bg-[var(--kraft)] hover:text-[var(--ink)]"

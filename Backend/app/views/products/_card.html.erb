@@ -13,7 +13,7 @@
   <%# İsim ve fiyat alt alta: dar kartlarda da isim sıkışmaz. %>
   <div class="mt-3 flex flex-1 flex-col gap-1">
     <h3 class="min-h-[2.5rem] min-w-0 font-sans text-sm font-medium leading-5 text-[var(--ink)]">
-      <%= link_to product.name, product_path(product), data: { turbo_frame: "main" }, class: "line-clamp-2 hover:text-[var(--blue-ink)]" %>
+      <%= link_to product.name, product_path(product), data: { turbo_frame: "main" }, class: "line-clamp-2 hover:text-[var(--accent-ink)]" %>
     </h3>
     <p class="mt-auto font-display text-base font-bold tabular-nums text-[var(--ink)]"><%= format_price(product.price) %></p>
   </div>

@@ -7,7 +7,7 @@
     <% active = my_reaction == kind %>
     <% if can_react %>
       <%= button_to comment_reaction_path(comment), params: { kind: kind }, aria: { pressed: active, label: "#{label} (#{count})" },
-            class: "inline-flex items-center gap-1.5 rounded-[3px] border px-2.5 py-1 tabular-nums transition-colors #{active ? "border-[var(--blue)] bg-[var(--blue)]/10 text-[var(--blue-ink)]" : "border-[var(--line)] text-[var(--ink-2)] hover:bg-[var(--kraft)]"}" do %>
+            class: "inline-flex items-center gap-1.5 rounded-[3px] border px-2.5 py-1 tabular-nums transition-colors #{active ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent-ink)]" : "border-[var(--line)] text-[var(--ink-2)] hover:bg-[var(--kraft)]"}" do %>
         <span aria-hidden="true"><%= icon %></span><%= count %>
       <% end %>
     <% else %>

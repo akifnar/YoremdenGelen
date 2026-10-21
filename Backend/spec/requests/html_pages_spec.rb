@@ -17,7 +17,7 @@ RSpec.describe "HTML sayfaları ve Turbo yanıtları", type: :request do
 
       get photo_product_path(product, index: -1)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(%(<turbo-frame class="relative block" id="photo_product_#{product.id}">), "images.unsplash.com")
+      expect(response.body).to include(%(<turbo-frame class="card-photo relative block" id="photo_product_#{product.id}">), "images.unsplash.com")
     end
 
     # Product#broadcast_catalog_changes bu partial'ları ApplicationController.render ile üretir.

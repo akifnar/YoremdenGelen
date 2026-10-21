@@ -3,7 +3,7 @@
     İlk görsel ana görseldir; galeri yalnızca ok tıklanınca yüklenir (katalogda N+1 sorgu olmaz). %>
 <% photo_url = photo_index.zero? ? product_image_url(product) : product_photo_urls(product)[photo_index] %>
 <% arrow = "absolute top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-[var(--paper-hi)]/90 text-lg text-[var(--ink)] shadow-sm transition-opacity hover:bg-[var(--paper-hi)] opacity-0 group-hover:opacity-100 focus-visible:opacity-100" %>
-<%= turbo_frame_tag dom_id(product, :photo), class: "relative block" do %>
+<%= turbo_frame_tag dom_id(product, :photo), class: "card-photo relative block" do %>
   <%= link_to product_path(product), data: { turbo_frame: "main" }, tabindex: -1,
         class: "block overflow-hidden rounded-[2px] bg-[var(--kraft)]" do %>
     <%= image_tag photo_url, alt: product.name, loading: "lazy",

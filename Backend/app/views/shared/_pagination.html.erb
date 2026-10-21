@@ -17,7 +17,7 @@
     <% when Integer %>
       <%= link_to item, pagy_url_for(pagy, item), aria: { label: "#{item}. sayfa" }, class: "#{base} text-[var(--ink-2)] hover:bg-[var(--kraft)]" %>
     <% when String %>
-      <span aria-current="page" class="<%= base %> btn-blue font-semibold"><%= item %></span>
+      <span aria-current="page" class="<%= base %> btn-accent font-semibold"><%= item %></span>
     <% when :gap %>
       <span aria-hidden="true" class="<%= base %> text-[var(--subtle)]">…</span>
     <% end %>
