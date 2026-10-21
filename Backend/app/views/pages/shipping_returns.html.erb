@@ -1,0 +1,23 @@
+<% content_for :title, "Teslimat ve iade · Yöremden Gelen" %>
+<main class="mx-auto w-full max-w-5xl px-5 py-12 sm:px-8 sm:py-16">
+  <%= render "partials/page_header", eyebrow: "Sipariş desteği", title: "Teslimat ve iade",
+             lead: "Siparişinle ilgili bilmen gerekenleri burada bulabilirsin.", extra_class: "max-w-2xl" %>
+
+  <div class="mt-9 grid gap-5 md:grid-cols-2">
+    <%= render "partials/feature_card", icon: "📦", title: "Teslimat", tag: :section do %>
+      Tahmini teslimat süresi ve varsa kargo ücreti, sipariş koşulları
+      kesinleştiğinde burada ve sipariş adımlarında açıkça
+      belirtilecektir.
+    <% end %>
+    <%= render "partials/feature_card", icon: "↩️", title: "İade", tone: :lime, tag: :section do %>
+      İade koşulları ürünün niteliğine ve yürürlükteki mevzuata göre
+      belirlenecektir. Gerçek iade süreci ve başvuru adımları burada
+      yayımlanacaktır.
+    <% end %>
+  </div>
+
+  <%= render "partials/draft_notice", extra_class: "mt-6" do %>
+    Bu sayfa şu an taslak içerik gösteriyor. Satış başlamadan önce gerçek
+    teslimat ve iade koşullarıyla güncellenmelidir.
+  <% end %>
+</main>

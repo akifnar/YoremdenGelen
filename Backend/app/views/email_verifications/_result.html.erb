@@ -1,0 +1,7 @@
+<%# locals: (message:, success:) %>
+<div id="verification_result">
+  <p role="<%= success ? "status" : "alert" %>" class="mt-4 <%= success ? "text-[var(--blue-ink)]" : "text-red-700" %>"><%= message %></p>
+  <% if success %>
+    <%= link_to "Giriş yap", login_path, class: "mt-6 inline-block border border-stone-900 px-5 py-3 text-sm font-semibold" %>
+  <% end %>
+</div>

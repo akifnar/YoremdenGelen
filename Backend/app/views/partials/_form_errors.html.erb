@@ -1,0 +1,9 @@
+<%# locals: (record:, extra_class: nil) %>
+<%# Formların üstündeki doğrulama hataları listesi; kayıt hatasızsa hiçbir şey render etmez. %>
+<% if record.errors.any? %>
+  <ul role="alert" class="space-y-1 border border-red-200 bg-red-50 p-3 text-sm text-red-800 <%= extra_class %>">
+    <% record.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
