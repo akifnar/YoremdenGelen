@@ -4,16 +4,8 @@ class ProductMetadata < ApplicationRecord
   belongs_to :product, inverse_of: :product_metadata
 
   validates :product_id, uniqueness: true
-  validates :click_count, :hover_count, :rating_sum, :rating_count, :comment_count,
+  validates :rating_sum, :rating_count, :comment_count,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  def record_click!
-    increment!(:click_count)
-  end
-
-  def record_hover!
-    increment!(:hover_count)
-  end
 
   def record_rating!(stars)
     stars = Integer(stars)
@@ -25,5 +17,9 @@ class ProductMetadata < ApplicationRecord
 
   def record_comment!
     increment!(:comment_count)
+  end
+
+  def record_comment_removed!
+    decrement!(:comment_count)
   end
 end
