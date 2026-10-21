@@ -1,0 +1,77 @@
+<%# Header lacivert panonun üzerinde: bağlantılar krem renkte (board-link), menüler bantlı kâğıt notu olarak açılır. %>
+<% link_classes = "board-link inline-flex items-center gap-2 rounded-[4px] px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]" %>
+<%# Sayfa bağlantıları yalnızca main frame'ini değiştirir; Çıkış header'ı değiştirdiği için tam sayfa geçişidir. %>
+<% main = { turbo_frame: "main" } %>
+<%# Açılır menüler dropdown_controller ile açılıp kapanır (wrapper'da data-open). Panel düğmenin altından aşağı doğru
+    kayarak açılır: üst kenarı sabit (origin-top), dikeyde ölçeklenip yukarıdan iner, aynı anda belirginleşir.
+    Panelin üst boşluğu (pt-2) imleç düğmeden panele geçerken menünün kapanmasını engeller. %>
+<% menu_wrapper = { controller: "dropdown", action: "mouseenter->dropdown#open mouseleave->dropdown#scheduleClose keydown.esc->dropdown#close focusout->dropdown#closeIfFocusLeft" } %>
+<% menu_button = { dropdown_target: "button", action: "click->dropdown#toggle" } %>
+<% menu_panel = "invisible absolute top-full z-50 origin-top -translate-y-1 scale-y-95 pt-4 opacity-0 transition duration-200 ease-out motion-reduce:transition-none group-data-[open]:visible group-data-[open]:translate-y-0 group-data-[open]:scale-y-100 group-data-[open]:opacity-100" %>
+<% menu_item = "menu-item flex w-full items-center gap-2 rounded-[2px] px-2 py-2 text-left text-sm font-medium text-[var(--ink-2)] hover:text-[var(--ink)]" %>
+<% menu_note = "paper rounded-[3px_2px_4px_2px] px-3 pb-2 pt-5" %>
+<header class="board sticky top-0 z-50 border-b border-[var(--board-line)]">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-8 py-3">
+    <div class="flex items-center gap-4">
+      <%= link_to root_path, data: main, class: "inline-flex shrink-0 items-center gap-2.5 rounded-[4px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)]" do %>
+        <span class="grid h-8 w-8 rotate-[-4deg] place-items-center rounded-[3px] bg-[var(--paper)] font-display text-base font-extrabold text-[var(--ink)] shadow-[0_2px_3px_rgba(0,0,0,0.35)]">Y</span>
+        <span class="font-display text-xl font-extrabold tracking-tight text-[var(--on-board-strong)]">
+          <span class="marker px-0.5">Yöremden</span> Gelen
+        </span>
+      <% end %>
+
+      <%= tag.div class: "group relative", data: menu_wrapper do %>
+        <button type="button" aria-haspopup="true" aria-expanded="false" class="<%= link_classes %>" <%= tag.attributes(data: menu_button) %>>
+          Kategoriler <span aria-hidden="true" class="text-[11px] opacity-55">▾</span>
+        </button>
+        <div class="<%= menu_panel %> left-0 w-64">
+          <nav aria-label="Kategoriler" class="<%= menu_note %>">
+            <span class="tape" aria-hidden="true"></span>
+            <%# Sabit kategori listesi: header her sayfada render edildiği için veritabanına gidilmez. %>
+            <% Product::CATEGORIES.each do |category| %>
+              <%= link_to category, category_path(Product.category_slug(category)), data: main.merge(action: "dropdown#select"), class: menu_item %>
+            <% end %>
+          </nav>
+        </div>
+      <% end %>
+    </div>
+
+    <nav class="flex items-center justify-end gap-1 text-sm" aria-label="Hesap ve sepet işlemleri">
+      <% if current_user %>
+        <% if current_user.admin? %>
+          <%= link_to "Kullanıcılar", admin_users_path, data: main, class: link_classes %>
+        <% elsif current_user.seller? %>
+          <%# Ürün paylaşma yalnızca satıcılara açıktır; alıcı menüsünde yer almaz. %>
+          <%= link_to "Panelim", seller_root_path, data: main, class: link_classes %>
+          <%= link_to "Ürünlerini paylaş", seller_products_path, data: main, class: link_classes %>
+        <% end %>
+
+        <%= tag.div class: "group relative", data: menu_wrapper do %>
+          <button type="button" aria-haspopup="true" aria-expanded="false" class="<%= link_classes %>" <%= tag.attributes(data: menu_button) %>>
+            <%= render "shared/avatar", user: current_user, size: "h-6 w-6 text-xs" %>
+            <span><%= current_user.name.split.first %></span>
+            <span aria-hidden="true" class="text-[11px] opacity-55">▾</span>
+          </button>
+          <div class="<%= menu_panel %> right-0 w-48">
+            <div id="profile_menu" class="<%= menu_note %>">
+              <span class="tape" aria-hidden="true"></span>
+              <%# Alıcıların ayarlar menüsü şimdilik kapalı; yalnızca satıcılar görür. %>
+              <% if current_user.seller? %>
+                <%= link_to "Ayarlar", settings_path, data: main.merge(action: "dropdown#select"), aria: { label: "Ayarlar" }, class: menu_item %>
+              <% end %>
+              <%= button_to "Çıkış yap", logout_path, method: :delete, form_class: "block",
+                    data: { action: "dropdown#select" }, class: "#{menu_item} hover:text-[#a94438]" %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if current_cart %>
+          <%= render "carts/badge", cart: current_cart, items: current_cart.ordered_items.to_a %>
+        <% end %>
+      <% else %>
+        <%= link_to "Giriş yap", login_path, data: main, class: link_classes %>
+        <%= link_to "Kayıt ol", register_path, data: main, class: button_classes(variant: :primary, size: :sm, extra: "ml-1") %>
+      <% end %>
+    </nav>
+  </div>
+</header>
