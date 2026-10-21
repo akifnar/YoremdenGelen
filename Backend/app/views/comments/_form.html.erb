@@ -1,0 +1,26 @@
+<%# locals: (product:, purchase:, errors: []) %>
+<%# Alıcının ilk yorumunda puan zorunludur (purchase.rated? yanlış); sonraki yorumlarda yıldız alanı hiç çıkmaz. %>
+<div id="comment_form" class="note mt-6 p-5">
+  <%= form_with url: product_comments_path(product), scope: :comment, class: "space-y-4" do |form| %>
+    <% if errors.any? %>
+      <ul role="alert" class="space-y-1 rounded-[3px] border border-[#a94438]/40 bg-[#a94438]/10 p-3 text-sm text-[#a94438]">
+        <% errors.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <% unless purchase.rated? %>
+      <%= render "shared/star_rating_field", form: form, legend: "Ürüne puanın (yalnızca ilk yorumunda)" %>
+    <% end %>
+
+    <%= form.label :body, class: "block text-sm font-medium text-[var(--ink-2)]" do %>
+      Yorumun
+      <%= form.text_area :body, required: true, rows: 3, maxlength: Comment::BODY_MAX_LENGTH,
+            placeholder: "Ürünle ilgili deneyimini paylaş",
+            class: "mt-1 block w-full resize-y rounded-[3px] border border-[rgba(34,30,23,0.32)] bg-[var(--paper)] px-3 py-2.5 font-normal" %>
+    <% end %>
+
+    <%= form.button "Yorumu gönder", type: "submit", data: { turbo_submits_with: "Gönderiliyor…" }, class: button_classes(variant: :primary, size: :md) %>
+  <% end %>
+</div>
