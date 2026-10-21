@@ -1,0 +1,15 @@
+<%# locals: (form:, attribute: :rating, required: true, legend: "Puanın") %>
+<%# Sayı yerine 5 tıklanabilir sarı yıldız. Arkada 1–5 değerli radio'lar var (klavye ve form doğrulaması
+    çalışır). Radio'lar DOM'da 5→1 sırayla durur, CSS (.star-input) bunları soldan sağa 1→5 gösterir;
+    böylece seçilen ya da üzerine gelinen yıldız ve solundakiler "~" seçicisiyle boyanır. %>
+<fieldset class="border-0 p-0">
+  <legend class="text-sm font-medium text-[var(--ink-2)]"><%= legend %></legend>
+  <div class="star-input mt-1">
+    <% 5.downto(1) do |stars| %>
+      <%= form.radio_button attribute, stars, required: required, id: "#{form.object_name}_#{attribute}_#{stars}" %>
+      <label for="<%= "#{form.object_name}_#{attribute}_#{stars}" %>" title="<%= stars %> yıldız">
+        <span aria-hidden="true">★</span><span class="sr-only"><%= stars %> yıldız</span>
+      </label>
+    <% end %>
+  </div>
+</fieldset>

@@ -1,0 +1,10 @@
+<%# locals: (rating:, count: nil, size: "text-lg") %>
+<%# Salt okunur ortalama puan: gri 5 yıldızın üstüne genişliği puanla orantılı sarı yıldızlar (4,3 → %86). %>
+<span class="inline-flex items-center gap-2" aria-label="<%= number_with_precision(rating, precision: 1, separator: ",") %> / 5 puan">
+  <span class="stars <%= size %>" aria-hidden="true">★★★★★<span class="stars-fill" style="width: <%= (rating.to_f / 5 * 100).clamp(0, 100).round(1) %>%">★★★★★</span></span>
+  <% if count %>
+    <span class="text-sm tabular-nums text-[var(--subtle)]">
+      <%= number_with_precision(rating, precision: 1, separator: ",") %> · <%= count %> değerlendirme
+    </span>
+  <% end %>
+</span>

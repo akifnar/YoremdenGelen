@@ -1,0 +1,11 @@
+<%# locals: (product:) %>
+<%# Ağırlıklı ortalama puan (Product#rating_stats: puanlar ilk yorumun like/dislike'ıyla ağırlıklanır).
+    İlk puanlı yorum gelince CommentsController bu bölümü Turbo Stream ile değiştirir. %>
+<% stats = product.rating_stats %>
+<div id="<%= dom_id(product, :rating) %>" class="mt-2">
+  <% if stats[:count].positive? %>
+    <%= render "shared/stars", rating: stats[:average], count: stats[:count] %>
+  <% else %>
+    <span class="font-hand text-lg text-[var(--subtle)]">henüz puan verilmemiş</span>
+  <% end %>
+</div>
