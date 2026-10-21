@@ -1,0 +1,23 @@
+<%# locals: (product:) %>
+<li id="<%= dom_id(product) %>" class="flex flex-wrap items-center gap-4 p-4 sm:flex-nowrap">
+  <%= image_tag product_image_url(product), alt: "", loading: "lazy", class: "h-16 w-16 shrink-0 object-cover" %>
+  <div class="min-w-0 flex-1">
+    <h3 class="truncate font-medium text-[var(--ink)]"><%= product.name %></h3>
+    <p class="mt-1 text-sm text-stone-600">
+      <%= format_price(product.price) %>
+      <span class="px-2 text-stone-400">·</span>
+      Stok: <%= product.stock %>
+      <span class="px-2 text-stone-400">·</span>
+      <%= product.is_active? ? "Yayında" : "Yayından kaldırıldı" %>
+    </p>
+  </div>
+  <% if product.is_active? %>
+    <div class="flex gap-2">
+      <%= link_to "Düzenle", edit_seller_product_path(product), data: { turbo_frame: "seller_product_form" },
+            class: button_classes(variant: :secondary, size: :sm) %>
+      <%= button_to "Yayından kaldır", seller_product_path(product), method: :delete,
+            form: { data: { turbo_confirm: "#{product.name} yayından kaldırılsın mı?" } },
+            class: button_classes(variant: :danger, size: :sm) %>
+    </div>
+  <% end %>
+</li>

@@ -1,0 +1,25 @@
+<% content_for :title, "Ürünlerim · Yöremden Gelen" %>
+<main class="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
+  <header class="border-b border-stone-200 pb-6">
+    <p class="text-sm font-medium text-[var(--blue-ink)]">Üretici alanı</p>
+    <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-[var(--ink)]">Yöresel ürünlerini paylaş</h1>
+    <p class="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
+      Ürünlerini yayınla, bilgilerini güncelle veya yayından kaldır. Tüm zorunlu alanlar sunucuda doğrulanır.
+    </p>
+  </header>
+
+  <%= render "seller/products/form", product: @product %>
+
+  <section class="mt-10" aria-labelledby="seller-products-heading">
+    <h2 id="seller-products-heading" class="text-xl font-semibold text-[var(--ink)]">Ürün listen</h2>
+    <% if @products.empty? %>
+      <p id="seller_products_empty" class="mt-4 border border-stone-200 bg-[var(--paper-hi)] p-5 text-sm text-stone-600">
+        Henüz ürün eklememişsin. İlk ürününü yukarıdaki formdan yayınlayabilirsin.
+      </p>
+    <% end %>
+    <%# Liste boşken de render edilir; yeni ürünler Turbo Stream ile başına eklenir. %>
+    <ul id="seller_products" class="mt-4 divide-y divide-stone-200 border-stone-200 bg-[var(--paper-hi)] [&:has(li)]:border-y">
+      <%= render partial: "seller/products/product", collection: @products, as: :product %>
+    </ul>
+  </section>
+</main>

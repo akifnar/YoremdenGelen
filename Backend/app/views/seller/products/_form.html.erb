@@ -1,0 +1,52 @@
+<%# locals: (product:) %>
+<%# "Düzenle" bağlantıları ve Turbo Stream yanıtları bu frame'i değiştirir. %>
+<%= turbo_frame_tag "seller_product_form" do %>
+  <section class="mt-7 border border-stone-200 bg-[var(--paper-hi)] p-5 sm:p-7">
+    <h2 class="text-lg font-semibold text-[var(--ink)]"><%= product.persisted? ? "Ürünü düzenle" : "Yeni ürün ekle" %></h2>
+
+    <%= form_with model: [ :seller, product ], class: "mt-5 grid gap-4 sm:grid-cols-2" do |form| %>
+      <%= render "partials/form_errors", record: product, extra_class: "sm:col-span-2" %>
+
+      <%= form.label :name, class: "text-sm font-medium text-stone-700" do %>
+        Ürün adı
+        <%= form.text_field :name, required: true, maxlength: Product::NAME_MAX_LENGTH, class: "seller-field mt-1 w-full border border-stone-300 px-3 py-2.5 font-normal" %>
+      <% end %>
+      <%= form.label :category, class: "text-sm font-medium text-stone-700" do %>
+        Kategori
+        <%= form.select :category, Product::CATEGORIES, { include_blank: "Kategori seçin" }, required: true,
+              class: "seller-field mt-1 w-full border border-stone-300 bg-[var(--paper-hi)] px-3 py-2.5 font-normal" %>
+      <% end %>
+      <%= form.label :price, class: "text-sm font-medium text-stone-700" do %>
+        Fiyat (₺)
+        <%= form.number_field :price, required: true, min: "0.01", max: "99999999.99", step: "0.01", class: "mt-1 w-full border border-stone-300 px-3 py-2.5 font-normal" %>
+      <% end %>
+      <%= form.label :stock, class: "text-sm font-medium text-stone-700" do %>
+        Stok adedi
+        <%= form.number_field :stock, required: true, min: 0, max: 2_147_483_647, step: 1, class: "mt-1 w-full border border-stone-300 px-3 py-2.5 font-normal" %>
+      <% end %>
+      <%= form.label :description, class: "text-sm font-medium text-stone-700 sm:col-span-2" do %>
+        Açıklama
+        <%= form.text_area :description, required: true, rows: 4, maxlength: Product::DESCRIPTION_MAX_LENGTH,
+              class: "seller-field mt-1 w-full resize-none border border-stone-300 px-3 py-2.5 font-normal" %>
+      <% end %>
+      <%= form.label :main_image, class: "text-sm font-medium text-stone-700 sm:col-span-2" do %>
+        Ana ürün fotoğrafı<%= " (değiştirmek için seçin)" if product.persisted? %>
+        <%= form.file_field :main_image, accept: "image/*", required: product.new_record?,
+              class: "seller-file mt-1 block w-full border border-stone-300 px-3 py-2 text-sm font-normal" %>
+      <% end %>
+      <%= form.label :gallery_images, class: "text-sm font-medium text-stone-700 sm:col-span-2" do %>
+        Ek fotoğraflar (isteğe bağlı)
+        <%= form.file_field :gallery_images, accept: "image/*", multiple: true,
+              class: "seller-file mt-1 block w-full border border-stone-300 px-3 py-2 text-sm font-normal" %>
+      <% end %>
+
+      <div class="flex flex-wrap gap-2 sm:col-span-2">
+        <%= form.button product.persisted? ? "Değişiklikleri kaydet" : "Ürünü yayınla", type: "submit",
+              data: { turbo_submits_with: "Kaydediliyor…" }, class: button_classes(variant: :primary, size: :lg, extra: "seller-publish") %>
+        <% if product.persisted? %>
+          <%= link_to "Vazgeç", new_seller_product_path, class: button_classes(variant: :secondary, size: :lg) %>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+<% end %>
