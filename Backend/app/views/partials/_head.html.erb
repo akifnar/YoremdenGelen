@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Yöremden Gelen">
+<%# Link tıklamalarında önbellekteki eski sayfa önizleme olarak gösterilmez; sayfa bir kez, güncel haliyle çizilir.
+    Geri/ileri düğmeleri önbelleği kullanmaya devam eder. %>
+<meta name="turbo-cache-control" content="no-preview">
 <%= csrf_meta_tags %>
 <%= csp_meta_tag %>
 <%= yield :head %>
