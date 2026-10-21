@@ -1,0 +1,19 @@
+<% content_for :title, "#{@seller.name} · Yöremden Gelen" %>
+<%= turbo_stream_from :products %>
+
+<main class="mx-auto w-full max-w-6xl px-8 py-10">
+  <header class="flex items-start gap-5 border-b border-[var(--line)] pb-8">
+    <%= render "shared/avatar", user: @seller, size: "h-16 w-16 text-xl" %>
+    <div class="min-w-0">
+      <p class="text-sm text-[var(--subtle)]">Satıcı</p>
+      <h1 class="font-display text-4xl font-extrabold tracking-tight text-[var(--ink)]"><%= @seller.name %></h1>
+      <p class="mt-2 text-sm tabular-nums text-[var(--subtle)]"><%= @pagy.count %> ürün</p>
+    </div>
+  </header>
+
+  <% if @products.empty? %>
+    <p class="mt-8 rounded-[3px] border border-dashed border-[rgba(34,30,23,0.32)] p-6 text-sm text-[var(--ink-2)]">Bu satıcının yayında ürünü yok.</p>
+  <% else %>
+    <%= render "products/grid", products: @products, pagy: @pagy %>
+  <% end %>
+</main>
