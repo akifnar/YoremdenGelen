@@ -1,0 +1,16 @@
+<%# Footer koyu panoda; üst kenarı yırtık kâğıt gibi. %>
+<footer class="mt-auto bg-[var(--board-deep)]">
+  <div class="torn-edge" aria-hidden="true"></div>
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-8 py-8 text-sm">
+    <p class="text-[var(--on-board)]">
+      © <%= Date.current.year %> <span class="font-display font-bold text-[var(--on-board-strong)]">Yöremden Gelen</span>
+      <span class="ml-2 font-hand text-lg text-[var(--amber)]">yerel üreticilerden evinize</span>
+    </p>
+    <nav aria-label="Alt menü" class="flex flex-wrap gap-x-5 gap-y-2">
+      <% [ [ "Hakkımızda", about_path ], [ "S.S.S.", faq_path ], [ "Teslimat ve İade", shipping_returns_path ],
+           [ "Gizlilik", privacy_path ], [ "Kullanım Koşulları", terms_path ] ].each do |label, path| %>
+        <%= link_to label, path, class: "board-link" %>
+      <% end %>
+    </nav>
+  </div>
+</footer>
