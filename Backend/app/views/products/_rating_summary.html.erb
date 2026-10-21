@@ -6,6 +6,6 @@
   <% if stats[:count].positive? %>
     <%= render "shared/stars", rating: stats[:average], count: stats[:count] %>
   <% else %>
-    <span class="font-hand text-lg text-[var(--subtle)]">henüz puan verilmemiş</span>
+    <span class="text-sm text-[var(--subtle)]">henüz puan verilmemiş</span>
   <% end %>
 </div>
