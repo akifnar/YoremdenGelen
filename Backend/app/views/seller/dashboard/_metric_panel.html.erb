@@ -1,0 +1,29 @@
+<%# locals: (title:, subtitle:, rows:, value_key:, max: nil, format: ->(value) { compact_number(value) }, detail: ->(row) { "" }) %>
+<%# Ürün başına tek ölçü (tek seri): renk tek, lejant yok; başlık neyin çizildiğini söyler. Ölçekler farklı olduğu için
+    metrikler tek eksende değil ayrı panellerde (small multiples) gösterilir. %>
+<% max_rows = 8 %>
+<% sorted = rows.sort_by { |row| [ -row[value_key], row[:product].name ] } %>
+<% scale = [ max || sorted.first&.dig(value_key).to_f, 1 ].max.to_f %>
+<section class="border border-stone-200 bg-[var(--paper-hi)] p-5" aria-labelledby="metric-<%= value_key %>">
+  <h3 id="metric-<%= value_key %>" class="font-semibold text-[var(--ink)]"><%= title %></h3>
+  <p class="mt-0.5 text-xs text-stone-500"><%= subtitle %></p>
+  <ol class="mt-4 space-y-2.5">
+    <% sorted.first(max_rows).each do |row| %>
+      <% value = row[value_key] %>
+      <li tabindex="0" class="group relative grid grid-cols-[minmax(0,8rem)_1fr] items-center gap-3 outline-none focus-visible:bg-[var(--kraft)] sm:grid-cols-[minmax(0,10rem)_1fr]">
+        <span class="truncate text-xs text-stone-600" title="<%= row[:product].name %>"><%= row[:product].name %></span>
+        <span class="flex items-center gap-2 border-l border-stone-300">
+          <span class="block h-4 rounded-r-[4px] bg-[#047857] transition-opacity group-hover:opacity-80"
+                style="width: <%= (value / scale * 100).clamp(0, 100).round(2) %>%; min-width: <%= value.positive? ? 2 : 0 %>px"></span>
+          <span class="shrink-0 text-xs font-semibold tabular-nums text-stone-800"><%= format.call(value) %></span>
+        </span>
+        <span role="tooltip" class="pointer-events-none absolute -top-9 left-24 z-10 hidden whitespace-nowrap border border-stone-200 bg-[var(--paper-hi)] px-2.5 py-1.5 text-xs text-stone-800 shadow-md group-hover:block group-focus-visible:block">
+          <strong class="font-semibold"><%= row[:product].name %></strong> · <%= format.call(value) %> <%= title.downcase(:turkic) %><%= detail.call(row) %>
+        </span>
+      </li>
+    <% end %>
+  </ol>
+  <% if sorted.length > max_rows %>
+    <p class="mt-3 text-xs text-stone-500">+<%= sorted.length - max_rows %> ürün daha — tümü tablo görünümünde.</p>
+  <% end %>
+</section>
