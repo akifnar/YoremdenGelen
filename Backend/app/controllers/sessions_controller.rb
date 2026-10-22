@@ -2,14 +2,19 @@ require "net/http"
 require "json"
 
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_request!, only: [ :new, :create, :google ]
+  skip_before_action :authenticate_request!, only: [ :new, :create, :google, :google_return ]
   # Google Identity Services "login_uri" akışı formu Google'dan POST eder; kendi
   # double-submit CSRF kontrolünü (g_csrf_token) verify_google_csrf! ile yapıyoruz.
   skip_forgery_protection only: :google
   before_action :verify_google_csrf!, only: :google
 
+  GOOGLE_RETURN_COOKIE = :google_return_to
+
   def new
     @return_to = safe_return_path(params[:returnTo])
+    # login_uri sorgu parametresi taşıyamaz (Google redirect URI'yi birebir eşler); dönüş yolu cookie'de bekler.
+    cookies[GOOGLE_RETURN_COOKIE] = { value: @return_to, httponly: true, same_site: :lax, secure: Rails.env.production?,
+                                      expires: 10.minutes.from_now } if ENV["GOOGLE_CLIENT_ID"].present?
   end
 
   def create
@@ -31,9 +36,15 @@ class SessionsController < ApplicationController
     user.assign_attributes(name: claims["name"].presence || claims["email"], email: claims["email"], email_verified_at: Time.current)
     user.save!
     set_auth_cookies(user.issue_session!)
-    redirect_to safe_return_path(params[:returnTo]), notice: "Hoş geldin, #{user.name}!"
+    # Google'dan gelen cross-site POST'ta Lax cookie'ler gönderilmez; dönüş yolu bu GET adımında okunur.
+    redirect_to google_auth_path, notice: "Hoş geldin, #{user.name}!", status: :see_other
   rescue ActiveRecord::RecordInvalid => error
     login_failed(error.record.errors.full_messages.to_sentence, :unprocessable_entity)
+  end
+
+  def google_return
+    flash.keep
+    redirect_to safe_return_path(cookies.delete(GOOGLE_RETURN_COOKIE))
   end
 
   def destroy

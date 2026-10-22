@@ -22,3 +22,6 @@
 # Tailwind derleme çıktısı (dev'de css servisi, üretimde assets:precompile üretir)
 /Backend/app/assets/builds/*
 !/Backend/app/assets/builds/.keep
+
+# Yerel ortam değişkenleri (Google Client ID vb.); docker compose kökteki .env dosyasını okur
+/.env

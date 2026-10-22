@@ -1,5 +1,4 @@
-<%# locals: (product:, purchase:, errors: []) %>
-<%# Alıcının ilk yorumunda puan zorunludur (purchase.rated? yanlış); sonraki yorumlarda yıldız alanı hiç çıkmaz. %>
+<%# locals: (product:, errors: []) %>
 <div id="comment_form" class="note mt-6 p-5">
   <%= form_with url: product_comments_path(product), scope: :comment, class: "space-y-4" do |form| %>
     <% if errors.any? %>
@@ -8,10 +7,6 @@
           <li><%= message %></li>
         <% end %>
       </ul>
-    <% end %>
-
-    <% unless purchase.rated? %>
-      <%= render "shared/star_rating_field", form: form, legend: "Ürüne puanın (yalnızca ilk yorumunda)" %>
     <% end %>
 
     <%= form.label :body, class: "block text-sm font-medium text-[var(--ink-2)]" do %>
