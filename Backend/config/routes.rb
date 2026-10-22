@@ -11,9 +11,8 @@ Rails.application.routes.draw do
   get "verify-email", to: "email_verifications#show", as: :verify_email
   post "verify-email", to: "email_verifications#create"
 
+  # Katalog kartı yalnızca ana görseli gösterir; galeri fotoğrafları sadece ürün sayfasında (show) açılır.
   resources :products, only: [ :index, :show ], path: "urunler" do
-    # Ürün kartındaki fotoğrafı yalnızca o kartın Turbo Frame'i içinde değiştirir.
-    get :photo, on: :member
     # Ürün yorumları: sayfalama (Turbo Frame) ve alıcı yorumu yazma.
     resources :comments, only: [ :index, :create ], path: "yorumlar"
   end

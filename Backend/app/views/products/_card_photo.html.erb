@@ -1,14 +1,8 @@
-<%# locals: (product:, photo_index:) %>
-<%# ‹ › bağlantıları ProductsController#photo'yu bu frame içinde çağırır; yalnızca bu kartın fotoğrafı değişir.
-    İlk görsel ana görseldir; galeri yalnızca ok tıklanınca yüklenir (katalogda N+1 sorgu olmaz). %>
-<% photo_url = photo_index.zero? ? product_image_url(product) : product_photo_urls(product)[photo_index] %>
-<% arrow = "absolute top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-[var(--paper-hi)]/90 text-lg text-[var(--ink)] shadow-sm transition-opacity hover:bg-[var(--paper-hi)] opacity-0 group-hover:opacity-100 focus-visible:opacity-100" %>
-<%= turbo_frame_tag dom_id(product, :photo), class: "card-photo relative block" do %>
-  <%= link_to product_path(product), data: { turbo_frame: "main" }, tabindex: -1,
-        class: "block overflow-hidden rounded-[2px] bg-[var(--kraft)]" do %>
-    <%= image_tag photo_url, alt: product.name, loading: "lazy",
-          class: "aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-safe:animate-photo-fade" %>
-  <% end %>
-  <%= link_to "‹", photo_product_path(product, index: photo_index - 1), aria: { label: "#{product.name} önceki fotoğraf" }, class: "#{arrow} left-2" %>
-  <%= link_to "›", photo_product_path(product, index: photo_index + 1), aria: { label: "#{product.name} sonraki fotoğraf" }, class: "#{arrow} right-2" %>
+<%# locals: (product:) %>
+<%# Katalog kartı yalnızca ana görseli gösterir (with_attached_main_image ile önceden yüklenir, N+1 yok).
+    Galeri fotoğrafları sadece ürün sayfasında görünür; kartta fotoğraf değiştirme düğmesi ve aksiyonu yoktur. %>
+<%= link_to product_path(product), data: { turbo_frame: "main" }, tabindex: -1,
+      class: "block overflow-hidden rounded-[2px] bg-[var(--kraft)]" do %>
+  <%= image_tag product_image_url(product), alt: product.name, loading: "lazy",
+        class: "aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" %>
 <% end %>

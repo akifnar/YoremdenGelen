@@ -3,7 +3,7 @@
 <%# Kart, sayfa kâğıdı üzerinde duran küçük bir not (.note). %>
 <article id="<%= dom_id(product, :card) %>" class="note group flex min-w-0 flex-col p-3">
   <div class="relative">
-    <%= render "products/card_photo", product: product, photo_index: 0 %>
+    <%= render "products/card_photo", product: product %>
     <% unless product.available? %>
       <%# Mühür görünümlü etiket. %>
       <span class="pointer-events-none absolute left-3 top-3 rotate-[-6deg] rounded-[3px] border-2 border-[#a94438] bg-[var(--paper-hi)]/85 px-2 py-0.5 font-display text-xs font-extrabold uppercase tracking-wider text-[#a94438]">Tükendi</span>

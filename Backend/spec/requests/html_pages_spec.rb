@@ -8,16 +8,23 @@ RSpec.describe "HTML sayfaları ve Turbo yanıtları", type: :request do
   describe "katalog" do
     let(:product) { persisted_product(id: 109) }
 
-    it "renders the product page and swaps a card photo inside its turbo frame" do
+    it "renders the product page with its photo gallery" do
       stub_active_product_lookup(product)
 
       get product_path(product)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(%(id="details_product_#{product.id}"), product.name)
+      expect(response.body).to include(%(id="details_product_#{product.id}"), product.name, 'data-action="gallery#next"')
+    end
 
-      get photo_product_path(product, index: -1)
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include(%(<turbo-frame class="card-photo relative block" id="photo_product_#{product.id}">), "images.unsplash.com")
+    # Galeri fotoğrafları yalnızca ürün sayfasında: kartta ‹ › yok ve eski fotoğraf değiştirme adresi kapalı.
+    it "shows only the main image on catalog cards and rejects the old card photo endpoint" do
+      card = ApplicationController.render(partial: "products/card", locals: { product: product })
+      expect(card).not_to include("‹", "›", "/urunler/#{product.id}/photo", "<turbo-frame")
+      expect(card.scan("<img").size).to eq(1)
+
+      get "/urunler/#{product.id}/photo", params: { index: 1 }
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).not_to include("images.unsplash.com")
     end
 
     # Product#broadcast_catalog_changes bu partial'ları ApplicationController.render ile üretir.

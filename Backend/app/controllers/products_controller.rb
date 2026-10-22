@@ -27,17 +27,6 @@ class ProductsController < ApplicationController
     render :not_found, status: :not_found
   end
 
-  # Katalog kartındaki ‹ › düğmeleri bu aksiyonu kartın Turbo Frame'i içinde çağırır;
-  # yalnızca o ürünün fotoğrafı değişir, sayfanın geri kalanı yerinde kalır.
-  def photo
-    @product = find_active_product!
-    photos = helpers.product_photo_urls(@product)
-    @photo_index = product_query_params[:index].to_i % photos.length
-    render partial: "products/card_photo", locals: { product: @product, photo_index: @photo_index }
-  rescue ActiveRecord::RecordNotFound
-    head :not_found
-  end
-
 
   private
 
@@ -48,10 +37,6 @@ class ProductsController < ApplicationController
 
   def find_active_product!
     Product.active.includes(:product_metadata, seller: { avatar_attachment: :blob }).with_attached_main_image.with_attached_gallery_images.find(product_route_params[:id])
-  end
-
-  def product_query_params
-    permitted_params([ :index ])
   end
 
   def product_route_params

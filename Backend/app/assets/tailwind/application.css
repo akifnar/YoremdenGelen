@@ -388,11 +388,3 @@ button:focus-visible,
     height: 2px;
     background-color: var(--amber);
 }
-
-/* Kart fotoğrafı ‹ › ile değişirken yalnızca o kartın görseli soluklaşır. Kural genel "turbo-frame[busy] img"
-   olsaydı, main frame'ini hedefleyen formlar (Sepete ekle) istek süresince sayfadaki tüm ürün görsellerini
-   soldurup geri açar, katalog baştan yükleniyormuş gibi görünürdü. */
-turbo-frame.card-photo[busy] img {
-    opacity: 0.6;
-    transition: opacity 120ms ease;
-}

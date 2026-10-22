@@ -24,6 +24,30 @@ RSpec.describe "Ürünler", type: :request do
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
   end
 
+  # Kategori sayfası sayfa sayfa (12'şer) yüklenir; kartlar yalnızca ana görseli kullandığı için galeri hiç sorgulanmaz.
+  it "paginates the category page and loads only main images without N+1 queries" do
+    13.times do |index|
+      product = Product.create!(name: "Kategori Ürünü #{index}", description: "x", category: "Peynir", price: 10, stock: 2)
+      attach(product.main_image, "main-#{index}")
+      attach(product.gallery_images, "gallery-#{index}")
+    end
+
+    queries = []
+    subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+      queries << payload[:sql] if payload[:sql].match?(/SELECT/i)
+    end
+    get category_path("peynir")
+    ActiveSupport::Notifications.unsubscribe(subscriber)
+
+    expect(response.body.scan(%r{/rails/active_storage/blobs/}).size).to eq(CategoryPagination::PAGE_PER_PAGE)
+    expect(response.body).not_to include("gallery-")
+    expect(queries.grep(/FROM "products"/).grep(/LIMIT \$?\d*/).join).to match(/LIMIT/)
+    expect(queries.grep(/active_storage_(attachments|blobs)/).length).to be <= 4
+    expect(queries.grep(/gallery_images/)).to be_empty
+  ensure
+    ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+  end
+
   it "shows attached gallery photos on the product page" do
     product = Product.create!(name: "Galerili Ürün", description: "x", category: "Peynir", price: 10, stock: 2)
     2.times { |index| attach(product.gallery_images, "gallery-#{index}") }
