@@ -1,7 +1,7 @@
 <%# locals: (product:) %>
 <%# Turbo Stream yayınlarında da render edildiği için kullanıcıya özel veri (current_user vb.) kullanılmaz. %>
 <%# Kart, sayfa kâğıdı üzerinde duran küçük bir not (.note). %>
-<article id="<%= dom_id(product, :card) %>" class="note group flex min-w-0 flex-col p-3">
+<article id="<%= dom_id(product, :card) %>" class="note product-card group flex min-w-0 flex-col p-3">
   <div class="relative">
     <%# Katalogda yalnızca ana görsel gösterilir; galeri fotoğrafları ürün sayfasında gezilir (sorgusuz, N+1 yok). %>
     <%= link_to product_path(product), data: { turbo_frame: "main" }, tabindex: -1,
