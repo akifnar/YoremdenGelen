@@ -157,6 +157,23 @@
     box-shadow: 0 2px 4px rgba(34, 30, 23, 0.14), 0 16px 26px -12px rgba(34, 30, 23, 0.5);
 }
 
+/* Ürün kartı üzerine gelinince sepet rozeti gibi hafifçe eğilir; komşu kartlar ters yöne eğilir ki
+   ızgara panoya rastgele iğnelenmiş notlar gibi dursun. */
+.product-card:hover {
+    transform: translateY(-2px) rotate(-1deg);
+}
+
+.product-card:nth-child(even):hover {
+    transform: translateY(-2px) rotate(1deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-card:hover,
+    .product-card:nth-child(even):hover {
+        transform: translateY(-2px);
+    }
+}
+
 /* Bant şeridi: kâğıdı panoya tutturan, hafif eğik turuncu-krem şerit. */
 .tape {
     position: absolute;
