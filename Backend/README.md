@@ -1,31 +1,27 @@
-# Rails API
+# Rails uygulaması
 
-Bu dizin Yöremden Gelen’in Rails JSON API’sini içerir. Proje kurulumu, Docker Compose servisleri ve geliştirme hesapları için depo kökündeki [`README.md`](../README.md) dosyasına bakın.
+Bu dizin Yöremden Gelen'in Rails + Hotwire uygulamasını içerir. Docker Compose kurulumu, ortam değişkenleri ve geliştirme hesapları için depo kökündeki [`README.md`](../README.md) dosyasına bakın.
 
 ## Yerel komutlar
 
 ```sh
-bundle install
-bin/rails db:prepare
-bin/rails server
-```
-
-API, PostgreSQL kullanır. `db:prepare` ilk veritabanı kurulumunda migration’ları ve seed’leri çalıştırır; satıcı ürün sahipliği migration’ı da bu adıma dahildir.
-
-## API alanları
-
-- `POST /api/auth/register`, `POST /api/auth/login`, `DELETE /api/auth/logout`
-- `GET /api/products`, `GET /api/products/:slug`
-- `GET|POST /api/seller/products`, `PATCH|DELETE /api/seller/products/:id`
-- `GET /api/cart`, `POST|PATCH|DELETE /api/cart/items`
-- `GET|DELETE /api/admin/users`
-
-Satıcı uçları session cookie gerektirir ve yalnızca oturum açmış kullanıcının kendi ürünlerini yönetir. Ürün fiyatı, stok, zorunlu alanlar ve sahiplik backend’de doğrulanır.
-
-## Testler
-
-```sh
+bin/setup        # bundle install, db:prepare ve bin/dev
+bin/dev          # Rails sunucusu + Tailwind watcher (Procfile.dev)
+bin/ci           # RuboCop, bundler-audit ve Brakeman
 bundle exec rspec
 ```
 
-Request spec’leri kayıt, yetkilendirme, ürün sahipliği ve sepet API’sini kapsar. Tam test paketi için test veritabanının migration’ları uygulanmış olmalıdır.
+Veritabanı bağlantısı `DB_HOST`, `DB_USERNAME` ve `DB_PASSWORD` ortam değişkenlerinden okunur.
+
+## Başlıca adresler
+
+| Yol | Sayfa |
+| --- | --- |
+| `/`, `/urunler/:id`, `/kategoriler/:slug`, `/saticilar/:id` | Katalog, ürün, kategori ve satıcı sayfaları |
+| `/login`, `/register`, `/verify-email` | Oturum, kayıt ve e-posta doğrulama |
+| `/sepet`, `/sepet/siparis` | Sepet ve sipariş |
+| `/satici`, `/satici/urunler` | Satıcı paneli ve ürün yönetimi |
+| `/admin/users` | Admin kullanıcı yönetimi |
+| `/ayarlar` | Satıcı profil ayarları |
+
+Ürün fiyatı, stok, zorunlu alanlar, roller ve ürün sahipliği sunucu tarafında doğrulanır.
