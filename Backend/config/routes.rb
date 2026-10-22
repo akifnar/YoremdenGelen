@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     get :photo, on: :member
     # Ürün yorumları: sayfalama (Turbo Frame) ve alıcı yorumu yazma.
     resources :comments, only: [ :index, :create ], path: "yorumlar"
+    resource :rating, only: :create, path: "puan", controller: "product_ratings"
   end
 
   # Alıcı kendi yorumunu siler; satıcı alıcı yorumuna tek cevap yazar; alıcılar like/dislike verir.

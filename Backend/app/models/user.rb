@@ -83,8 +83,8 @@ class User < ApplicationRecord
     update!(session_token: nil, session_token_expires_at: nil, remember_token: nil, remember_token_expires_at: nil)
   end
 
-  # Ürün sayfasında yorum formunu ve puan alanını belirler: nil ise yorum yetkisi yoktur, satır varsa
-  # rated? ile ilk yorum olup olmadığı anlaşılır. Alıcı dışındaki roller için sorgu çalışmaz.
+  # Ürün sayfasında yorum ve puan formlarını belirler: nil ise yetki yoktur, satır varsa rated? ile puan formunun
+  # gösterilip gösterilmeyeceği anlaşılır (aynı satır, ek sorgu yok). Alıcı dışındaki roller için sorgu çalışmaz.
   def purchase_of(product)
     return unless buyer?
 

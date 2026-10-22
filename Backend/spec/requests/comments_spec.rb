@@ -13,8 +13,8 @@ RSpec.describe "Yorumlar", type: :request do
     ProductPurchase.record!(user: user, product: product)
   end
 
-  def post_comment(body: "Çok lezzetli", rating: nil)
-    post product_comments_path(product), params: { comment: { body: body, rating: rating }.compact }, headers: turbo_stream
+  def post_comment(body: "Çok lezzetli")
+    post product_comments_path(product), params: { comment: { body: body } }, headers: turbo_stream
   end
 
   describe "yorum yazma" do
@@ -24,47 +24,40 @@ RSpec.describe "Yorumlar", type: :request do
       get product_path(product)
       expect(response.body).not_to include('id="comment_form"')
 
-      post_comment(rating: 5)
+      post_comment
       expect(response).to have_http_status(:forbidden)
       expect(Comment.count).to eq(0)
     end
 
-    it "requires stars on the first comment, records the rating once and hides the stars afterwards" do
+    it "accepts comments without stars and shows the rating form separately until the buyer rates" do
       purchase!
       sign_in_stubbed(buyer)
 
       get product_path(product)
-      expect(response.body).to include('id="comment_form"', 'class="star-input')
+      expect(response.body).to include('id="comment_form"', 'id="rating_form"', 'name="product_rating[rating]"')
+      expect(response.body).not_to include('name="comment[rating]"')
 
       post_comment
-      expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("İlk yorumunda 1 ile 5 arasında yıldız seçmelisin")
-
-      post_comment(rating: 4)
       expect(response).to have_http_status(:created)
-      expect(response.body).to include(%(target="comments"), %(target="#{ActionView::RecordIdentifier.dom_id(product, :rating)}"), "4,0 · 1 değerlendirme")
-      expect(response.body).not_to include('class="star-input')
-
-      post_comment(body: "İkinci kez aldım, yine güzel", rating: 1)
-      expect(response).to have_http_status(:created)
-      expect(buyer.purchase_of(product).rating).to eq(4) # sonraki yorumların puanı yok sayılır
-      expect(product.metrics.reload).to have_attributes(rating_count: 1, comment_count: 2)
+      expect(response.body).to include(%(target="comments"))
+      expect(buyer.purchase_of(product)).not_to be_rated
+      expect(product.metrics.reload).to have_attributes(rating_count: 0, comment_count: 1)
     end
 
     it "validates the body in the controller" do
       purchase!
       sign_in_stubbed(buyer)
 
-      post_comment(body: "   ", rating: 5)
+      post_comment(body: "   ")
       expect(response.body).to include("Yorum boş bırakılamaz")
-      post_comment(body: "a" * 2001, rating: 5)
+      post_comment(body: "a" * 2001)
       expect(response.body).to include("Yorum en fazla 2000 karakter olabilir")
       expect(Comment.count).to eq(0)
     end
 
     it "does not let sellers write top-level comments" do
       sign_in_stubbed(seller)
-      post_comment(rating: 5)
+      post_comment
       expect(response).to have_http_status(:forbidden)
     end
   end

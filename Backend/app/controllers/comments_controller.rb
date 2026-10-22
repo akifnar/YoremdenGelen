@@ -18,23 +18,19 @@ class CommentsController < ApplicationController
   end
 
   # Controller seviyesi: yalnızca bu ürünü satın almış alıcı (product_purchases'te satır), dolu ve en fazla
-  # 2000 karakterlik metin, ilk yorumda 1–5 yıldız. Model seviyesi: Comment ve ProductPurchase doğrulamaları.
+  # 2000 karakterlik metin. Puan ayrı verilir (ProductRatingsController). Model seviyesi: Comment doğrulamaları.
   def create
     @product = Product.active.find(params[:product_id])
     @purchase = current_user.purchase_of(@product)
     return respond_with_error("Yorum yazmak için bu ürünü satın almış olmalısın", :forbidden) unless @purchase
 
     body = comment_params[:body].to_s.strip
-    rating = comment_params[:rating].to_s
     errors = body_errors(body)
-    errors << "İlk yorumunda 1 ile 5 arasında yıldız seçmelisin" if !@purchase.rated? && !rating.match?(/\A[1-5]\z/)
     return render_form(errors) if errors.any?
 
-    @comment = Comment.transaction do
-      comment = @product.comments.create!(user: current_user, body: body)
-      @purchase.rate!(rating.to_i, comment: comment) unless @purchase.rated?
-      comment
-    end
+    @comment = @product.comments.create!(user: current_user, body: body)
+    # Yorumdan önce verilmiş puan, ağırlığı bu ilk yorumun tepkilerinden alsın diye ona bağlanır.
+    @purchase.attach_rating_comment!(@comment) if @purchase.rated? && @purchase.rating_comment_id.nil?
 
     respond_to do |format|
       format.turbo_stream do
@@ -42,9 +38,8 @@ class CommentsController < ApplicationController
         render turbo_stream: [
           turbo_stream.remove("comments_empty"),
           turbo_stream.prepend("comments", partial: "comments/comment", locals: { comment: @comment, product: @product, my_reaction: nil, can_react: true }),
-          turbo_stream.replace("comment_form", partial: "comments/form", locals: { product: @product, purchase: @purchase.reload }),
-          turbo_stream.replace("comments_count", partial: "comments/count", locals: { product: @product }),
-          turbo_stream.replace(dom_id(@product, :rating), partial: "products/rating_summary", locals: { product: @product })
+          turbo_stream.replace("comment_form", partial: "comments/form", locals: { product: @product }),
+          turbo_stream.replace("comments_count", partial: "comments/count", locals: { product: @product })
         ], status: :created
       end
       format.html { redirect_to product_path(@product), notice: "Yorumun eklendi.", status: :see_other }
@@ -87,7 +82,7 @@ class CommentsController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace("comment_form", partial: "comments/form",
-                                                  locals: { product: @product, purchase: @purchase, errors: errors }),
+                                                  locals: { product: @product, errors: errors }),
                status: :unprocessable_entity
       end
       format.html { redirect_to product_path(@product), alert: errors.to_sentence, status: :see_other }
@@ -95,6 +90,6 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    permitted_params(comment: [ :body, :rating ])[:comment] || ActionController::Parameters.new
+    permitted_params(comment: [ :body ])[:comment] || ActionController::Parameters.new
   end
 end

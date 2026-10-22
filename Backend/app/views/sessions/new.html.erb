@@ -2,18 +2,23 @@
 <main class="mx-auto w-full max-w-md px-5 py-12">
   <h1 class="text-2xl font-extrabold tracking-tight">Giriş yap</h1>
 
-  <%# Giriş header'ı (menü, sepet rozeti) değiştirdiği için form tam sayfa (_top) gönderilir. %>
-  <%= form_with scope: :user, url: login_path(returnTo: @return_to), class: "mt-6 space-y-4", data: { turbo_frame: "_top" } do |form| %>
+  <%# Form Turbo'suz, tarayıcının kendi gönderimiyle gider: giriş header'ı (menü, sepet rozeti) zaten tam sayfa
+      değiştirir ve tarayıcıların şifre yöneticileri (Chrome, Safari, Firefox, Edge) "şifreyi kaydet" önerisini
+      ancak gerçek bir form gönderimi ve sayfa geçişi gördüğünde güvenilir şekilde çıkarır. autocomplete="username"
+      + "current-password" çifti, kayıtlı hesabın e-posta alanına tıklanınca önerilmesini sağlar. %>
+  <%= form_with scope: :user, url: login_path(returnTo: @return_to), class: "mt-6 space-y-4",
+        data: { turbo: false, controller: "native-submit", native_submit_text_value: "İşleniyor…",
+                action: "submit->native-submit#submit pageshow@window->native-submit#reset" } do |form| %>
     <%= form.label :email, class: "block text-sm" do %>
       E-posta
-      <%= form.email_field :email, value: @email, required: true, autocomplete: "email", class: "mt-1 block w-full border border-stone-300 px-3 py-3" %>
+      <%= form.email_field :email, value: @email, required: true, autocomplete: "username", class: "mt-1 block w-full border border-stone-300 px-3 py-3" %>
     <% end %>
     <%= render "sessions/password_field", form: form, autocomplete: "current-password" %>
     <%= form.label :remember_me, class: "flex items-center gap-2 text-sm text-stone-700" do %>
       <%= form.check_box :remember_me, class: "h-4 w-4 accent-stone-900" %>
       Beni hatırla
     <% end %>
-    <%= form.button "Giriş yap", type: "submit", data: { turbo_submits_with: "İşleniyor…" },
+    <%= form.button "Giriş yap", type: "submit", data: { native_submit_target: "button" },
           class: button_classes(variant: :primary, size: :lg, extra: "w-full") %>
   <% end %>
 
