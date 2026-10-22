@@ -53,6 +53,8 @@ RSpec.describe "HTML sayfaları ve Turbo yanıtları", type: :request do
 
       get login_path
       expect(response.body).to include("Giriş yap")
+      # Şifre yöneticileri: Turbo'suz gerçek form gönderimi ve username + current-password çifti.
+      expect(response.body).to include('data-turbo="false"', 'autocomplete="username"', 'autocomplete="current-password"')
 
       post login_path(returnTo: "/sepet"), params: { user: { email: user.email, password: "wrong-pass" } }
       expect(response).to have_http_status(:unauthorized)
@@ -68,6 +70,7 @@ RSpec.describe "HTML sayfaları ve Turbo yanıtları", type: :request do
     it "re-renders registration errors" do
       get register_path
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include('data-turbo="false"', 'autocomplete="username"', 'autocomplete="new-password"')
 
       post register_path, params: { user: { name: "", email: "hatali", password: "123" } }
       expect(response).to have_http_status(:unprocessable_content)

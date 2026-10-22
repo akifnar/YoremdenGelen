@@ -2,7 +2,11 @@
 <main class="mx-auto w-full max-w-md px-5 py-12">
   <h1 class="text-2xl font-extrabold tracking-tight">Hesap oluştur</h1>
 
-  <%= form_with model: @user, scope: :user, url: register_path, class: "mt-6 space-y-4" do |form| %>
+  <%# Giriş formu gibi Turbo'suz gönderilir: tarayıcı "güçlü şifre öner" ve "şifreyi kaydet" adımlarını çalıştırır;
+      autocomplete="username" + "new-password" ile kaydedilen hesap giriş formunda aynı e-postayla önerilir. %>
+  <%= form_with model: @user, scope: :user, url: register_path, class: "mt-6 space-y-4",
+        data: { turbo: false, controller: "native-submit", native_submit_text_value: "İşleniyor…",
+                action: "submit->native-submit#submit pageshow@window->native-submit#reset" } do |form| %>
     <%= render "partials/form_errors", record: @user %>
     <%= form.label :name, class: "block text-sm" do %>
       Ad soyad
@@ -10,10 +14,10 @@
     <% end %>
     <%= form.label :email, class: "block text-sm" do %>
       E-posta
-      <%= form.email_field :email, required: true, autocomplete: "email", class: "mt-1 block w-full border border-stone-300 px-3 py-3" %>
+      <%= form.email_field :email, required: true, autocomplete: "username", class: "mt-1 block w-full border border-stone-300 px-3 py-3" %>
     <% end %>
     <%= render "sessions/password_field", form: form, autocomplete: "new-password" %>
-    <%= form.button "Kayıt ol", type: "submit", data: { turbo_submits_with: "İşleniyor…" },
+    <%= form.button "Kayıt ol", type: "submit", data: { native_submit_target: "button" },
           class: button_classes(variant: :primary, size: :lg, extra: "w-full") %>
   <% end %>
 
