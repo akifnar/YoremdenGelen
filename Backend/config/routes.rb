@@ -5,15 +5,16 @@ Rails.application.routes.draw do
   get "login", to: "sessions#new", as: :login
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy", as: :logout
+  # Google Console'daki yetkili redirect URI ile birebir aynı olmalı (ör. http://localhost:3000/auth/google);
+  # Google kimliği POST eder, giriş sonrası aynı adrese GET ile kayıtlı dönüş yoluna gidilir.
   post "auth/google", to: "sessions#google", as: :google_auth
+  get "auth/google", to: "sessions#google_return"
   get "register", to: "registrations#new", as: :register
   post "register", to: "registrations#create"
   get "verify-email", to: "email_verifications#show", as: :verify_email
   post "verify-email", to: "email_verifications#create"
 
   resources :products, only: [ :index, :show ], path: "urunler" do
-    # Ürün kartındaki fotoğrafı yalnızca o kartın Turbo Frame'i içinde değiştirir.
-    get :photo, on: :member
     # Ürün yorumları: sayfalama (Turbo Frame) ve alıcı yorumu yazma.
     resources :comments, only: [ :index, :create ], path: "yorumlar"
     resource :rating, only: :create, path: "puan", controller: "product_ratings"

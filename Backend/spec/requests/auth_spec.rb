@@ -109,4 +109,23 @@ RSpec.describe "Kimlik doğrulama", type: :request do
     expect(response).to have_http_status(:ok)
     expect(user.reload.email_verified_at).to be_present
   end
+
+  # Google'ın tokeninfo çağrısı taklit edilir; redirect URI'nin Console'daki değerle birebir eşleşmesi test ediliyor.
+  it "uses the exact /auth/google redirect URI and returns to the saved path after Google login" do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("GOOGLE_CLIENT_ID").and_return("test-client")
+    allow_any_instance_of(SessionsController).to receive(:google_claims)
+      .and_return("sub" => "g-1", "email" => "google@example.com", "name" => "Gül", "email_verified" => "true")
+
+    get login_path(returnTo: "/sepet"), headers: { "Host" => "localhost:3000" }
+    expect(response.body).to include('data-login_uri="http://localhost:3000/auth/google"')
+
+    cookies[:g_csrf_token] = "csrf"
+    post google_auth_path, params: { credential: "jwt", g_csrf_token: "csrf" }
+    expect(response).to redirect_to(google_auth_path)
+    expect(User.find_by(google_uid: "g-1").session_token).to be_present
+
+    get google_auth_path
+    expect(response).to redirect_to("/sepet")
+  end
 end
