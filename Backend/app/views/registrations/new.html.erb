@@ -21,6 +21,8 @@
           class: button_classes(variant: :primary, size: :lg, extra: "w-full") %>
   <% end %>
 
+  <%= render "sessions/google_button", label: "Google ile kaydol", return_to: nil %>
+
   <p class="mt-6 text-sm text-stone-600">
     Zaten hesabın var mı? <%= link_to "Giriş yap", login_path, class: "font-semibold underline" %>
   </p>
