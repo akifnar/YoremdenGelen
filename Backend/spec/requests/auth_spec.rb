@@ -110,22 +110,44 @@ RSpec.describe "Kimlik doğrulama", type: :request do
     expect(user.reload.email_verified_at).to be_present
   end
 
-  # Google'ın tokeninfo çağrısı taklit edilir; redirect URI'nin Console'daki değerle birebir eşleşmesi test ediliyor.
-  it "uses the exact /auth/google redirect URI and returns to the saved path after Google login" do
+  # Google'ın token uç noktası taklit edilir; redirect URI'nin Console'daki değerle birebir eşleşmesi test ediliyor.
+  def stub_google_env
     allow(ENV).to receive(:[]).and_call_original
     allow(ENV).to receive(:[]).with("GOOGLE_CLIENT_ID").and_return("test-client")
-    allow_any_instance_of(SessionsController).to receive(:google_claims)
-      .and_return("sub" => "g-1", "email" => "google@example.com", "name" => "Gül", "email_verified" => "true")
+    allow(ENV).to receive(:[]).with("GOOGLE_CLIENT_SECRET").and_return("test-secret")
+  end
 
-    get login_path(returnTo: "/sepet"), headers: { "Host" => "localhost:3000" }
-    expect(response.body).to include('data-login_uri="http://localhost:3000/auth/google"')
+  def start_google_login(return_to: nil)
+    post google_start_path, params: { returnTo: return_to }.compact, headers: { "Host" => "localhost:3000" }
+    Rack::Utils.parse_query(URI(response.location).query)
+  end
 
-    cookies[:g_csrf_token] = "csrf"
-    post google_auth_path, params: { credential: "jwt", g_csrf_token: "csrf" }
-    expect(response).to redirect_to(google_auth_path)
-    expect(User.find_by(google_uid: "g-1").session_token).to be_present
+  it "sends the user to Google with the exact /auth/google redirect URI and returns to the saved path after login" do
+    stub_google_env
+    allow_any_instance_of(SessionsController).to receive(:google_claims).with("auth-code")
+      .and_return("sub" => "g-1", "email" => "google@example.com", "name" => "Gül", "email_verified" => true)
 
-    get google_auth_path
+    get login_path(returnTo: "/sepet")
+    expect(response.body).to include("Google ile giriş yap", %(action="/auth/google/start"))
+    get register_path
+    expect(response.body).to include("Google ile kaydol")
+
+    query = start_google_login(return_to: "/sepet")
+    expect(response.location).to start_with(SessionsController::GOOGLE_AUTHORIZE_URL)
+    expect(query).to include("client_id" => "test-client", "redirect_uri" => "http://localhost:3000/auth/google", "response_type" => "code")
+
+    get google_auth_path, params: { code: "auth-code", state: query["state"] }, headers: { "Host" => "localhost:3000" }
     expect(response).to redirect_to("/sepet")
+    expect(User.find_by(google_uid: "g-1")).to have_attributes(role: "buyer", password_digest: nil, session_token: be_present)
+  end
+
+  it "rejects a Google callback whose state does not match the browser's cookie" do
+    stub_google_env
+    start_google_login
+
+    get google_auth_path, params: { code: "auth-code", state: "forged" }
+    expect(response).to redirect_to(login_path(returnTo: "/"))
+    expect(flash[:alert]).to eq("Google oturum isteği doğrulanamadı")
+    expect(User.where.not(google_uid: nil)).to be_empty
   end
 end

@@ -5,10 +5,10 @@ Rails.application.routes.draw do
   get "login", to: "sessions#new", as: :login
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy", as: :logout
-  # Google Console'daki yetkili redirect URI ile birebir aynı olmalı (ör. http://localhost:3000/auth/google);
-  # Google kimliği POST eder, giriş sonrası aynı adrese GET ile kayıtlı dönüş yoluna gidilir.
-  post "auth/google", to: "sessions#google", as: :google_auth
-  get "auth/google", to: "sessions#google_return"
+  # Google düğmesi auth/google/start'a POST eder; Google kullanıcıyı Console'daki yetkili redirect URI'ye
+  # (birebir aynı olmalı, ör. http://localhost:3000/auth/google) ?code=…&state=… ile GET olarak döndürür.
+  post "auth/google/start", to: "sessions#google_start", as: :google_start
+  get "auth/google", to: "sessions#google", as: :google_auth
   get "register", to: "registrations#new", as: :register
   post "register", to: "registrations#create"
   get "verify-email", to: "email_verifications#show", as: :verify_email

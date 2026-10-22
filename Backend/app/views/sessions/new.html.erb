@@ -22,17 +22,7 @@
           class: button_classes(variant: :primary, size: :lg, extra: "w-full") %>
   <% end %>
 
-  <% if ENV["GOOGLE_CLIENT_ID"].present? %>
-    <%# Google Identity Services "redirect" akışı: kimlik bilgisi doğrudan sessions#google'a POST edilir. %>
-    <% content_for :head do %>
-      <script src="https://accounts.google.com/gsi/client" async></script>
-    <% end %>
-    <div id="g_id_onload" data-client_id="<%= ENV["GOOGLE_CLIENT_ID"] %>" data-ux_mode="redirect"
-         data-login_uri="<%= google_auth_url %>" data-auto_prompt="false"></div>
-    <div class="g_id_signin mt-3 flex min-h-10 justify-center" data-type="standard" data-theme="outline" data-size="large" data-width="320"></div>
-  <% else %>
-    <p class="mt-3 text-center text-xs text-stone-500">Google girişi için GOOGLE_CLIENT_ID ayarlanmalıdır.</p>
-  <% end %>
+  <%= render "sessions/google_button", label: "Google ile giriş yap", return_to: @return_to %>
 
   <p class="mt-6 text-sm text-stone-600">
     Hesabın yok mu? <%= link_to "Kayıt ol", register_path, class: "font-semibold underline" %>
