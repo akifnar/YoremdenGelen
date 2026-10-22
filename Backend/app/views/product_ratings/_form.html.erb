@@ -1,0 +1,17 @@
+<%# locals: (product:, errors: []) %>
+<%# Satın almış ve henüz puan vermemiş alıcıya gösterilir; puan bir kez verilir, sonra form kaldırılır. %>
+<div id="rating_form" class="note mt-6 p-5">
+  <%= form_with url: product_rating_path(product), scope: :product_rating, class: "space-y-4" do |form| %>
+    <% if errors.any? %>
+      <ul role="alert" class="space-y-1 rounded-[3px] border border-[#a94438]/40 bg-[#a94438]/10 p-3 text-sm text-[#a94438]">
+        <% errors.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <%= render "shared/star_rating_field", form: form, legend: "Ürüne puanın (bir kez verilir)" %>
+
+    <%= form.button "Puanı kaydet", type: "submit", data: { turbo_submits_with: "Kaydediliyor…" }, class: button_classes(variant: :primary, size: :md) %>
+  <% end %>
+</div>
