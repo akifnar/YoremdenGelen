@@ -7,7 +7,7 @@ Yöresel ürünleri keşfetmek, sepetten sipariş vermek ve satıcı hesabıyla 
 - **Uygulama:** Ruby 3.4, Rails 8.1, Hotwire (Turbo + Stimulus), Importmap, Propshaft
 - **Arayüz:** Tailwind CSS (`tailwindcss-rails`), Pagy ile sayfalama
 - **Veri:** PostgreSQL, Active Storage (ürün ve profil görselleri), Solid Queue / Cache / Cable
-- **Kimlik doğrulama:** `has_secure_password` (bcrypt), şifreli cookie'ler, isteğe bağlı Google girişi
+- **Kimlik doğrulama:** `has_secure_password` (bcrypt), şifreli cookie'ler, isteğe bağlı Google girişi (OAuth authorization code akışı)
 - **Test ve kalite:** RSpec, RuboCop (rails-omakase), Brakeman, bundler-audit
 - **Geliştirme ortamı:** Docker Compose
 
@@ -50,7 +50,7 @@ Hepsi isteğe bağlıdır; boş bırakıldığında ilgili özellik devre dış�
 | Değişken | Açıklama |
 | --- | --- |
 | `APP_HOST`, `APP_PORT` | E-posta bağlantılarında kullanılan adres (varsayılan `localhost:3000`) |
-| `GOOGLE_CLIENT_ID` | Google ile giriş |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google ile giriş; biri eksikse Google butonu gösterilmez. Google Cloud Console'da yetkili yönlendirme adresi olarak `http://localhost:3000/auth/google` eklenmelidir |
 | `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_DOMAIN`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTHENTICATION` | Doğrulama e-postalarının gönderimi |
 | `INITIAL_USER_EMAIL`, `INITIAL_USER_PASSWORD`, `INITIAL_ADMIN_EMAIL`, `INITIAL_ADMIN_PASSWORD` | Seed ile oluşturulan ilk hesaplar |
 
